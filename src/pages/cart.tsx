@@ -3,8 +3,11 @@ import { Stack, Heading, Flex } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { ItensSection } from "../components/Cart/ItensSection";
 import { CheckoutSection } from "../components/Cart/CheckoutSection";
+import { useCart } from "../hooks/useCart";
+import { EmptyCart } from "../components/Cart/EmptyCart";
 
 export default function Cart() {
+  const { cartQuantity } = useCart();
   return (
     <>
       <Head>
@@ -21,8 +24,14 @@ export default function Cart() {
             Your cart
           </Heading>
           <Flex flexWrap="wrap">
-            <ItensSection />
-            <CheckoutSection />
+            {cartQuantity === 0 ? (
+              <EmptyCart />
+            ) : (
+              <>
+                <ItensSection />
+                <CheckoutSection />
+              </>
+            )}
           </Flex>
         </Stack>
       </Container>

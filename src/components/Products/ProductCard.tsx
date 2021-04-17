@@ -6,6 +6,7 @@ import {
   HTMLChakraProps,
   chakra,
   Icon,
+  Tooltip,
 } from "@chakra-ui/react";
 
 import { motion, HTMLMotionProps } from "framer-motion";
@@ -16,6 +17,7 @@ import { formatPrice } from "../../util/formatPrice";
 import { useCart } from "../../hooks/useCart";
 import { useState } from "react";
 import { FaunaProduct } from "../../@Types";
+import { useWishlist } from "../../hooks/useWishList";
 
 type Merge<P, T> = Omit<P, keyof T> & T;
 type MotionBoxProps = Merge<HTMLChakraProps<"div">, HTMLMotionProps<"div">>;
@@ -31,6 +33,7 @@ export const ProductCard = ({
 }: FaunaProduct) => {
   const [isLoading, setIsLoading] = useState(false);
   const { addToCar } = useCart();
+  const { addToWishlist } = useWishlist();
 
   async function handleAddButton() {
     setIsLoading(true);
@@ -42,6 +45,16 @@ export const ProductCard = ({
       price,
     });
     setIsLoading(false);
+  }
+
+  function handleAddToWishlist() {
+    addToWishlist({
+      category,
+      id,
+      image,
+      name,
+      price,
+    });
   }
 
   return (
@@ -77,23 +90,26 @@ export const ProductCard = ({
       >
         Add to your cart
       </Button>
-      <Box
-        position="absolute"
-        top="1"
-        right="1"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        padding="1"
-        backgroundColor="gray.200"
-        borderRadius="full"
-        cursor="pointer"
-        _hover={{
-          color: "pink.500",
-        }}
-      >
-        <Icon as={RiHeart2Line} />
-      </Box>
+      <Tooltip label="Wishlist" backgroundColor="gray.600" color="white">
+        <Box
+          position="absolute"
+          top="1"
+          right="1"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          padding="1"
+          backgroundColor="gray.200"
+          borderRadius="full"
+          cursor="pointer"
+          onClick={handleAddToWishlist}
+          _hover={{
+            color: "pink.500",
+          }}
+        >
+          <Icon as={RiHeart2Line} />
+        </Box>
+      </Tooltip>
     </MotionBox>
   );
 };

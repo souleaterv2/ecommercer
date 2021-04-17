@@ -1,33 +1,39 @@
 import Link from "next/link";
 
-import { Icon, Flex, HStack, Box, Text } from "@chakra-ui/react";
+import { Icon, Flex, HStack, Box, Text, Tooltip } from "@chakra-ui/react";
 import { RiUser3Line, RiHeartLine, RiShoppingCart2Line } from "react-icons/ri";
 
 import { Badger } from "../../components/Badger";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useCart } from "../../hooks/useCart";
+import { useWishlist } from "../../hooks/useWishList";
 
-const fontSize = "1.2rem";
+const fontSize = "1.3rem";
 
 interface ProfileProps {
   isInLargeScreen: boolean;
 }
 
 export const Profile = ({ isInLargeScreen }: ProfileProps) => {
-  const { quantity, calcCartPrice } = useCart();
+  const { cartQuantity, calcCartPrice } = useCart();
   const { handleLoginModel } = useGlobal();
+  const { wishlistQuantity } = useWishlist();
 
   return (
     <HStack spacing="4">
-      <Badger value={6}>
-        <Icon
-          _hover={{
-            color: "pink.500",
-          }}
-          cursor="pointer"
-          fontSize={fontSize}
-          as={RiHeartLine}
-        />
+      <Badger value={wishlistQuantity}>
+        <Link href="/wishlist">
+          <a>
+            <Icon
+              _hover={{
+                color: "pink.500",
+              }}
+              cursor="pointer"
+              fontSize={fontSize}
+              as={RiHeartLine}
+            />
+          </a>
+        </Link>
       </Badger>
       <Flex
         alignItems="center"
@@ -56,7 +62,7 @@ export const Profile = ({ isInLargeScreen }: ProfileProps) => {
             color: "pink.500",
           }}
         >
-          <Badger value={quantity}>
+          <Badger value={cartQuantity}>
             <Icon fontSize={fontSize} as={RiShoppingCart2Line} />
           </Badger>
           {isInLargeScreen && (

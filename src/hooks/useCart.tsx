@@ -12,7 +12,7 @@ interface CartItem extends FaunaProduct {
 interface CartContextData {
   cart: CartItem[];
   addToCar: (product: FaunaProduct) => Promise<void>;
-  quantity: number;
+  cartQuantity: number;
   calcCartPrice: () => string;
   removeFromCart: (productID: string) => void;
   addProductQuanty: (productID: string, quantity: number) => Promise<void>;
@@ -93,7 +93,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
     <CartContext.Provider
       value={{
         cart,
-        quantity: cart.length,
+        cartQuantity: cart.length,
         addToCar,
         calcCartPrice,
         removeFromCart,
