@@ -1,6 +1,14 @@
 import React from "react";
 
-import { Stack, Flex, Text, Button } from "@chakra-ui/react";
+import {
+  Stack,
+  Flex,
+  Text,
+  Button,
+  Image,
+  Center,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 
 import { RiLogoutBoxFill } from "react-icons/ri";
 
@@ -13,24 +21,43 @@ interface WishListItensProps {
 }
 
 export const WishListItens = ({ content }: WishListItensProps) => {
+  const isInLargeScreen = useBreakpointValue({
+    base: false,
+    lg: true,
+  });
+
   return (
-    <Stack flex="66%">
-      <Flex justifyContent="space-between" alignItems="center">
-        <Text fontWeight='medium' >List of items you added to wishlist:</Text>
-        <Button
-          size='sm'
-          leftIcon={<RiLogoutBoxFill />}
-          colorScheme="pink"
-          variant="solid"
-        >
-          Sign out
-        </Button>
-      </Flex>
-      <Stack>
-        {content.map((item) => (
-          <WishListCard key={item.id} {...item} />
-        ))}
-      </Stack>
+    <Stack padding="2" h="100%">
+      {isInLargeScreen && (
+        <Flex justifyContent="space-between" alignItems="center">
+          <Text fontSize="larger" fontWeight="medium">
+            List of items you added to wishlist:
+          </Text>
+          <Button
+            size="sm"
+            leftIcon={<RiLogoutBoxFill />}
+            colorScheme="pink"
+            variant="solid"
+          >
+            Sign out
+          </Button>
+        </Flex>
+      )}
+
+      {content.length === 0 ? (
+        <Center flex="1" flexDirection="column">
+          <Image marginTop="6" w="190px" src="heart.svg" alt="empty wishlist" />
+          <Text fontWeight="semibold" fontSize="large">
+            Your wishlist is empty
+          </Text>
+        </Center>
+      ) : (
+        <Stack>
+          {content.map((item) => (
+            <WishListCard key={item.id} {...item} />
+          ))}
+        </Stack>
+      )}
     </Stack>
   );
 };

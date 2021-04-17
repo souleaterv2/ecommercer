@@ -5,20 +5,35 @@ import { Heading, Flex } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { ProfileBar } from "../components/WishList/ProfileBar";
 import { useWishlist } from "../hooks/useWishList";
-import { WishListItens } from "../components/WishList/WishListItens";
+import { WishlistContent } from "../components/WishList/WishListContent";
 
 export default function Wishlist() {
   const { wishlist } = useWishlist();
   return (
     <>
-      <Head >
+      <Head>
         <title>Wishlist | StylesUP</title>
       </Head>
-      <Container paddingX="12" paddingY="6">
-        <Heading marginLeft='2' >My wishlist</Heading>
-        <Flex>
+      <Container
+        paddingX={{
+          base: "4",
+          md: "8",
+          lg: "12",
+        }}
+        paddingY="6"
+      >
+        <Heading
+          textAlign={{
+            base: "center",
+            lg: "left",
+          }}
+          marginLeft="2"
+        >
+          My wishlist
+        </Heading>
+        <Flex flexWrap="wrap">
           <ProfileBar />
-          <WishListItens content={wishlist} />
+          <WishlistContent />
         </Flex>
       </Container>
     </>
