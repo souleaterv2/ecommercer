@@ -2,7 +2,7 @@ import { Avatar, Text, Stack, HStack, Button } from "@chakra-ui/react";
 
 import { RiFileUploadFill } from "react-icons/ri";
 
-import { Input } from "../Form/Input";
+import { Input } from "../../../Form/Input";
 
 export const UserInfo = () => {
   return (

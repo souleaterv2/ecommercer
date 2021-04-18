@@ -9,9 +9,9 @@ import {
 } from "react-icons/ri";
 
 import { HiLocationMarker } from "react-icons/hi";
-import { useProfile } from "../../context/ProfileContext";
+import { useProfile } from "../../../../context/ProfileContext";
 
-export const BarItens = () => {
+export const SideItens = () => {
   const { handleProfileContent } = useProfile();
 
   return (

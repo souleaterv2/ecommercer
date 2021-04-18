@@ -12,7 +12,7 @@ import {
 
 import { RiLogoutBoxFill } from "react-icons/ri";
 
-import { FaunaProduct } from "../../@Types";
+import { FaunaProduct } from "../../../../@Types";
 
 import { WishListCard } from "./WishListCard";
 

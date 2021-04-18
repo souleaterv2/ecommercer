@@ -3,8 +3,8 @@ import Head from "next/head";
 import { Heading, Flex } from "@chakra-ui/react";
 
 import { Container } from "../components/Container";
-import { ProfileBar } from "../components/WishList/ProfileBar";
-import { WishlistContent } from "../components/WishList/WishListContent";
+import { Sidebar } from "../components/Profile/sections/sidebar/Sidebar";
+import { ProfileContent } from "../components/Profile/ProfileContent";
 
 export default function Wishlist() {
   return (
@@ -30,8 +30,8 @@ export default function Wishlist() {
           My wishlist
         </Heading>
         <Flex flexWrap="wrap">
-          <ProfileBar />
-          <WishlistContent />
+          <Sidebar />
+          <ProfileContent />
         </Flex>
       </Container>
     </>

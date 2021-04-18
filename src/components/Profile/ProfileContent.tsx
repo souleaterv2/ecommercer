@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import { useProfile } from "../../context/ProfileContext";
 
-import { UserInfo } from "./UserInfo";
-import { WishListItens } from "./WishListItens";
+import { UserInfo } from "./sections/profile/UserInfo";
+import { WishListItens } from "./sections/wishlist/WishListItens";
 
-export const WishlistContent = () => {
+export const ProfileContent = () => {
   const { wishlist, content} = useProfile();
 
   const {  wishlistItens} = wishlist;

@@ -11,9 +11,9 @@ import {
 import { useState } from "react";
 
 import { RiMenuLine } from "react-icons/ri";
-import { BarItens } from "./BarItens";
+import { SideItens } from "./SideItens";
 
-export const ProfileBar = () => {
+export const Sidebar = () => {
   const isInSmallScreen = useBreakpointValue({
     base: true,
     lg: false,
@@ -60,10 +60,10 @@ export const ProfileBar = () => {
               Account menu
             </Button>
           )}
-          {!isInSmallScreen && <BarItens />}
+          {!isInSmallScreen && <SideItens />}
         </HStack>
         <Collapse in={isCollapsedMenu}>
-          <BarItens />
+          <SideItens />
         </Collapse>
       </Box>
     </Box>

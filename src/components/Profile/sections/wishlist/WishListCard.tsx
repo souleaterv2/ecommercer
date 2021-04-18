@@ -1,15 +1,12 @@
-import { Image, Flex, Button, Text, Box } from "@chakra-ui/react";
+import { Image, Flex, Button, Text } from "@chakra-ui/react";
 
 import { HiTrash } from "react-icons/hi";
-import { FaunaProduct } from "../../@Types";
-import { useProfile } from "../../context/ProfileContext";
-import { useWishlist } from "../../hooks/useWishList";
-import { formatPrice } from "../../util/formatPrice";
+import { FaunaProduct } from "../../../../@Types";
+import { useProfile } from "../../../../context/ProfileContext";
+import { formatPrice } from "../../../../util/formatPrice";
 
 export const WishListCard = ({ id, image, name, price }: FaunaProduct) => {
-  const { wishlist } = useProfile();
-
-  const { removeFromWishList } = wishlist;
+  const { removeFromWishList } = useProfile().wishlist;
 
   function handleRemoveButton() {
     removeFromWishList(id);

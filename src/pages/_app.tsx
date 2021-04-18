@@ -8,7 +8,7 @@ import { GlobalContextProvider } from "../hooks/useGlobal";
 import { CartContextProvider } from "../hooks/useCart";
 import { ProfileContextProvider } from "../context/ProfileContext";
 
-import { LoginModal } from "../components/LoginModal";
+import { LoginModal } from "../components/modals/LoginModal";
 
 import "swiper/swiper-bundle.min.css";
 import "../styles/global.scss";

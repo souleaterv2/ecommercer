@@ -1,8 +1,8 @@
 import { Stack, Button, Box, ScaleFade } from "@chakra-ui/react";
 
-import { useGlobal } from "../hooks/useGlobal";
-import { CustomModal } from "./CustomModal";
-import { Input } from "./Form/Input";
+import { useGlobal } from "../../hooks/useGlobal";
+import { CustomModal } from "../CustomModal";
+import { Input } from "../Form/Input";
 
 export const LoginModal = () => {
   const { isLoginModelOpen, handleLoginModel } = useGlobal();
