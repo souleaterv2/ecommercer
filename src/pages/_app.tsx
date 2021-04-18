@@ -6,7 +6,7 @@ import { theme } from "../styles/theme";
 
 import { GlobalContextProvider } from "../hooks/useGlobal";
 import { CartContextProvider } from "../hooks/useCart";
-import { WishlistContextProvider } from "../hooks/useWishList";
+import { ProfileContextProvider } from "../context/ProfileContext";
 
 import { LoginModal } from "../components/LoginModal";
 
@@ -18,10 +18,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider theme={theme}>
       <GlobalContextProvider>
         <CartContextProvider>
-          <WishlistContextProvider>
+          <ProfileContextProvider>
             <Header />
             <Component {...pageProps} />
-          </WishlistContextProvider>
+          </ProfileContextProvider>
         </CartContextProvider>
         <LoginModal />
         <CSSReset />

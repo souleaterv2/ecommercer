@@ -9,10 +9,10 @@ import {
 } from "react-icons/ri";
 
 import { HiLocationMarker } from "react-icons/hi";
-import { useWishlist } from "../../hooks/useWishList";
+import { useProfile } from "../../context/ProfileContext";
 
 export const BarItens = () => {
-  const { handleWishListContent } = useWishlist();
+  const { handleProfileContent } = useProfile();
 
   return (
     <List marginTop="2.5" spacing="4">
@@ -24,7 +24,7 @@ export const BarItens = () => {
           color: "pink.500",
         }}
         cursor="pointer"
-        onClick={() => handleWishListContent("orders")}
+        onClick={() => handleProfileContent("orders")}
       >
         <ListIcon fontSize="1.2rem" as={RiShoppingBag3Fill} />
         Orders
@@ -34,7 +34,7 @@ export const BarItens = () => {
           color: "pink.500",
         }}
         cursor="pointer"
-        onClick={() => handleWishListContent("wishlist")}
+        onClick={() => handleProfileContent("wishlist")}
       >
         <ListIcon fontSize="1.2rem" as={RiHeartFill} />
         Wishlist
@@ -44,7 +44,7 @@ export const BarItens = () => {
           color: "pink.500",
         }}
         cursor="pointer"
-        onClick={() => handleWishListContent("tickets")}
+        onClick={() => handleProfileContent("tickets")}
       >
         <ListIcon fontSize="1.2rem" as={RiTicket2Fill} />
         Support tickets
@@ -57,7 +57,7 @@ export const BarItens = () => {
           color: "pink.500",
         }}
         cursor="pointer"
-        onClick={() => handleWishListContent("profile")}
+        onClick={() => handleProfileContent("profile")}
       >
         <ListIcon fontSize="1.2rem" as={RiUserFill} />
         Profile info
@@ -67,7 +67,7 @@ export const BarItens = () => {
           color: "pink.500",
         }}
         cursor="pointer"
-        onClick={() => handleWishListContent("addresses")}
+        onClick={() => handleProfileContent("addresses")}
       >
         <ListIcon fontSize="1.2rem" as={HiLocationMarker} />
         Addresses
@@ -77,7 +77,7 @@ export const BarItens = () => {
           color: "pink.500",
         }}
         cursor="pointer"
-        onClick={() => handleWishListContent("payment")}
+        onClick={() => handleProfileContent("payment")}
       >
         <ListIcon fontSize="1.2rem" as={RiBankCardFill} />
         Payment methods

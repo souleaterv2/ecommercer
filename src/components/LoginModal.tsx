@@ -8,8 +8,12 @@ export const LoginModal = () => {
   const { isLoginModelOpen, handleLoginModel } = useGlobal();
 
   return (
-    <CustomModal isOpen={isLoginModelOpen} onRequestClose={handleLoginModel}>
-      <ScaleFade initialScale={0.9} in={true} >
+    <CustomModal
+      isOpen={isLoginModelOpen}
+      onRequestClose={handleLoginModel}
+      onClickClose={handleLoginModel}
+    >
+      <ScaleFade initialScale={0.9} in={true}>
         <Stack
           spacing="4"
           borderRadius="lg"
@@ -17,25 +21,13 @@ export const LoginModal = () => {
           as="form"
           backgroundColor="gray.800"
           position="relative"
+          width="500px"
         >
           <Input name="Email" label="Email" />
           <Input name="Password" label="Password" />
           <Button type="submit" size="md" colorScheme="pink">
             Sign in
           </Button>
-          <Box
-            cursor="pointer"
-            position="absolute"
-            top="-2"
-            right="3"
-            aria-label="close button"
-            _hover={{
-              filter: "brightness(0.7)",
-            }}
-            onClick={handleLoginModel}
-          >
-            X
-          </Box>
         </Stack>
       </ScaleFade>
     </CustomModal>

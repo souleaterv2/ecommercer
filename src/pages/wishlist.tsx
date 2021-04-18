@@ -4,11 +4,9 @@ import { Heading, Flex } from "@chakra-ui/react";
 
 import { Container } from "../components/Container";
 import { ProfileBar } from "../components/WishList/ProfileBar";
-import { useWishlist } from "../hooks/useWishList";
 import { WishlistContent } from "../components/WishList/WishListContent";
 
 export default function Wishlist() {
-  const { wishlist } = useWishlist();
   return (
     <>
       <Head>

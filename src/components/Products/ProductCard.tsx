@@ -18,6 +18,7 @@ import { useCart } from "../../hooks/useCart";
 import { useState } from "react";
 import { FaunaProduct } from "../../@Types";
 import { useWishlist } from "../../hooks/useWishList";
+import { useProfile } from "../../context/ProfileContext";
 
 type Merge<P, T> = Omit<P, keyof T> & T;
 type MotionBoxProps = Merge<HTMLChakraProps<"div">, HTMLMotionProps<"div">>;
@@ -33,7 +34,9 @@ export const ProductCard = ({
 }: FaunaProduct) => {
   const [isLoading, setIsLoading] = useState(false);
   const { addToCar } = useCart();
-  const { addToWishlist } = useWishlist();
+  const { wishlist } = useProfile();
+
+  const { addToWishlist } = wishlist;
 
   async function handleAddButton() {
     setIsLoading(true);

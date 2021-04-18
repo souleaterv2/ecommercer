@@ -6,7 +6,7 @@ import { RiUser3Line, RiHeartLine, RiShoppingCart2Line } from "react-icons/ri";
 import { Badger } from "../../components/Badger";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useCart } from "../../hooks/useCart";
-import { useWishlist } from "../../hooks/useWishList";
+import { useProfile } from "../../context/ProfileContext";
 
 const fontSize = "1.3rem";
 
@@ -17,7 +17,9 @@ interface ProfileProps {
 export const Profile = ({ isInLargeScreen }: ProfileProps) => {
   const { cartQuantity, calcCartPrice } = useCart();
   const { handleLoginModel } = useGlobal();
-  const { wishlistQuantity } = useWishlist();
+  const { wishlist } = useProfile();
+
+  const { wishlistQuantity } = wishlist;
 
   return (
     <HStack spacing="4">

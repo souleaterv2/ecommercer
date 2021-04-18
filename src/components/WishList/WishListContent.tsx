@@ -1,17 +1,18 @@
 import { Box } from "@chakra-ui/react";
-
-import { useWishlist } from "../../hooks/useWishList";
+import { useProfile } from "../../context/ProfileContext";
 
 import { UserInfo } from "./UserInfo";
 import { WishListItens } from "./WishListItens";
 
 export const WishlistContent = () => {
-  const { wislistContent, wishlist } = useWishlist();
+  const { wishlist, content} = useProfile();
+
+  const {  wishlistItens} = wishlist;
 
   function renderContent() {
-    switch (wislistContent) {
+    switch (content) {
       case "wishlist": {
-        return <WishListItens content={wishlist} />;
+        return <WishListItens content={wishlistItens} />;
       }
 
       case "profile": {
