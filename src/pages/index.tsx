@@ -23,7 +23,10 @@ interface HomeProps {
   products: FaunaProduct[];
 }
 
-export default function Home({ carouselData, products }: HomeProps) {
+export default function Home({
+  carouselData,
+  products,
+}: HomeProps): JSX.Element {
   return (
     <>
       <Head>

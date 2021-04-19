@@ -4,9 +4,9 @@ import { Flex, Image, Box, Text, Stack, Button, Icon } from "@chakra-ui/react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 import { FaunaProduct } from "../../@Types";
-import { useCart } from "../../hooks/useCart";
 import { formatPrice } from "../../util/formatPrice";
 import { InputNumber } from "../Form/InputNumber";
+import { useCart } from "../../hooks/useCart";
 
 interface cartItemCard extends FaunaProduct {
   quantity: number;
@@ -18,9 +18,10 @@ export const CartItemCard = ({
   name,
   quantity,
   price,
-}: cartItemCard) => {
+}: cartItemCard): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const { addProductQuanty, removeFromCart } = useCart();
+
   async function handleQuantityProduct(value: string) {
     setIsLoading(true);
     await addProductQuanty(id, Number(value));

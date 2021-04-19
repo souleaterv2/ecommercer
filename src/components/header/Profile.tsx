@@ -1,12 +1,13 @@
 import Link from "next/link";
-
-import { Icon, Flex, HStack, Box, Text, Tooltip } from "@chakra-ui/react";
+import { Icon, Flex, HStack, Box, Text, useToast } from "@chakra-ui/react";
 import { RiUser3Line, RiHeartLine, RiShoppingCart2Line } from "react-icons/ri";
 
 import { Badger } from "../../components/Badger";
 import { useGlobal } from "../../hooks/useGlobal";
-import { useCart } from "../../hooks/useCart";
 import { useProfile } from "../../context/ProfileContext";
+import { useSession } from "next-auth/client";
+import { useRouter } from "next/dist/client/router";
+import { useCart } from "../../hooks/useCart";
 
 const fontSize = "1.3rem";
 
@@ -14,29 +15,42 @@ interface ProfileProps {
   isInLargeScreen: boolean;
 }
 
-export const Profile = ({ isInLargeScreen }: ProfileProps) => {
+export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
+  const [session] = useSession();
+  const { push } = useRouter();
   const { cartQuantity, calcCartPrice } = useCart();
   const { handleLoginModel } = useGlobal();
-  const { wishlist } = useProfile();
+  const { wishlistQuantity } = useProfile().wishlist;
+  const toast = useToast();
 
-  const { wishlistQuantity } = wishlist;
+  function handleWishlist() {
+    if (session) {
+      push("/profile");
+      return;
+    }
+    toast({
+      title: "Wishlist",
+      description: "You must first login to use the wishlist",
+      isClosable: true,
+      duration: 3000,
+      status: "warning",
+    });
+  }
 
   return (
     <HStack spacing="4">
       <Badger value={wishlistQuantity}>
-        <Link href="/wishlist">
-          <a>
-            <Icon
-              _hover={{
-                color: "pink.500",
-              }}
-              cursor="pointer"
-              fontSize={fontSize}
-              as={RiHeartLine}
-            />
-          </a>
-        </Link>
+        <Icon
+          _hover={{
+            color: "pink.500",
+          }}
+          cursor="pointer"
+          fontSize={fontSize}
+          as={RiHeartLine}
+          onClick={handleWishlist}
+        />
       </Badger>
+
       <Flex
         alignItems="center"
         cursor="pointer"
@@ -48,13 +62,16 @@ export const Profile = ({ isInLargeScreen }: ProfileProps) => {
         <Icon marginRight="2" fontSize={fontSize} as={RiUser3Line} />
         {isInLargeScreen && (
           <Box>
-            <Text fontSize="0.9rem">Hello, Sign in</Text>
+            <Text fontSize="0.9rem">
+              {session ? `Hello, ${session?.user.name}` : "Hello, Sign in"}
+            </Text>
             <Text fontSize="0.95rem" fontWeight="semibold">
-              My Account
+              {session ? "welcome back" : `In your Account`}
             </Text>
           </Box>
         )}
       </Flex>
+
       <Link href="/cart">
         <Flex
           as="a"

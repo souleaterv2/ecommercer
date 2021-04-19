@@ -1,3 +1,5 @@
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/client";
 import Head from "next/head";
 
 import { Heading, Flex } from "@chakra-ui/react";
@@ -5,8 +7,13 @@ import { Heading, Flex } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { Sidebar } from "../components/Profile/sections/sidebar/Sidebar";
 import { ProfileContent } from "../components/Profile/ProfileContent";
+import { FaunaUser } from "../@Types";
 
-export default function Wishlist() {
+interface WishlistProps {
+  user: FaunaUser;
+}
+
+export default function Wishlist({ user }: WishlistProps): JSX.Element {
   return (
     <>
       <Head>
@@ -30,10 +37,30 @@ export default function Wishlist() {
           My wishlist
         </Heading>
         <Flex flexWrap="wrap">
-          <Sidebar />
+          <Sidebar user={user} />
           <ProfileContent />
         </Flex>
       </Container>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      user: {
+        ...session.user,
+      },
+    },
+  };
+};

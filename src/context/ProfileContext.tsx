@@ -2,13 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { CreatePaymentData, useCreatePayment } from "../hooks/useCreatePayment";
 import { WishlistData, useWishlist } from "../hooks/useWishList";
 
-type Content =
-  | "orders"
-  | "wishlist"
-  | "tickets"
-  | "profile"
-  | "addresses"
-  | "payment";
+type Content = "wishlist" | "profile" | "payment";
 
 interface UserProfileContextData {
   content: Content;
@@ -30,7 +24,7 @@ export const ProfileContextProvider: React.FC = ({ children }) => {
   function handleProfileContent(current: Content) {
     setContent(current);
   }
-return (
+  return (
     <ProfileContext.Provider
       value={{ content, handleProfileContent, wishlist, paymentMethod }}
     >
@@ -39,6 +33,6 @@ return (
   );
 };
 
-export function useProfile() {
+export function useProfile(): UserProfileContextData {
   return useContext(ProfileContext);
 }

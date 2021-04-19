@@ -4,7 +4,7 @@ import { RiFileUploadFill } from "react-icons/ri";
 
 import { Input } from "../../../Form/Input";
 
-export const UserInfo = () => {
+export const UserInfo = ():JSX.Element => {
   return (
     <Stack padding="4">
       <HStack>

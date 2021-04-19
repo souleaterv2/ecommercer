@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
-
+import Cookies from "js-cookie";
 import { FaunaProduct, FaunaStock } from "../@Types";
 import { api } from "../services/api";
 import { formatPrice } from "../util/formatPrice";
@@ -21,7 +21,18 @@ interface CartContextData {
 const CartContext = createContext({} as CartContextData);
 
 export const CartContextProvider: React.FC = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    const cartData = Cookies.getJSON("StylesUP:cart");
+    if (cartData) {
+      return cartData;
+    }
+
+    return [];
+  });
+
+  useEffect(() => {
+    Cookies.set("StylesUP:cart", cart, { expires: 31, path: "/" });
+  }, [cart]);
 
   function calcCartPrice() {
     const total = cart.reduce((acc, cartIem) => {
@@ -65,14 +76,12 @@ export const CartContextProvider: React.FC = ({ children }) => {
 
   async function addToCar(product: FaunaProduct) {
     const isProductInCart = cart.find((cartItem) => cartItem.id === product.id);
-    console.log("isProdct", isProductInCart);
     if (!isProductInCart) {
       const stock = (
         await api.post<FaunaStock>("/cart", {
           productID: product.id,
         })
       ).data;
-      console.log(stock);
 
       if (stock.quantity > 0) {
         setCart([...cart, { ...product, quantity: 1 }]);

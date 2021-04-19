@@ -11,9 +11,14 @@ import {
 import { useState } from "react";
 
 import { RiMenuLine } from "react-icons/ri";
+import { FaunaUser } from "../../../../@Types";
 import { SideItens } from "./SideItens";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  user: FaunaUser;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   const isInSmallScreen = useBreakpointValue({
     base: true,
     lg: false,
@@ -41,11 +46,11 @@ export const Sidebar = () => {
           flexWrap="wrap"
         >
           <HStack marginBottom="4">
-            <Avatar size="lg" />
+            <Avatar src={user.image ?? null} size="lg" alt={user.name} />
             <Stack>
-              <Text fontWeight="semibold">Rodrigo Silva</Text>
+              <Text fontWeight="semibold">{user.name}</Text>
               <Text fontWeight="medium" color="blue.500">
-                rodsilvavieira@gmail.com
+                {user.email}
               </Text>
             </Stack>
           </HStack>

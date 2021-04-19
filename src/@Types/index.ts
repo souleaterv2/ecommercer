@@ -8,6 +8,8 @@ export type CarouselItem = {
   };
 };
 
+//#Fauna types
+
 export enum FaunaCollections {
   products = "products",
   stock = "stock",
@@ -62,4 +64,15 @@ export type FaunaGetCollection<T> = {
     ts: string;
     data: T;
   }[];
+};
+
+///Profile types
+
+export type Flags = "Visa" | "Mastercard";
+
+export type Card = {
+  id: number;
+  flag: Flags;
+  owner: string;
+  expires: string;
 };

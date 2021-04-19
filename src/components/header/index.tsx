@@ -4,7 +4,7 @@ import { Box, Heading, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { SearchInput } from "./Input";
 import { Profile } from "./Profile";
 
-export const Header = () => {
+export function Header(): JSX.Element {
   const isInLargeScreen = useBreakpointValue({
     base: false,
     md: true,
@@ -39,7 +39,7 @@ export const Header = () => {
           >
             StylesUP
             <Text color="pink.500" as="span">
-              .
+                          .
             </Text>
           </Heading>
         </Link>
@@ -48,4 +48,4 @@ export const Header = () => {
       </Flex>
     </Box>
   );
-};
+}

@@ -1,11 +1,10 @@
 import { Flex, Button, Text, Stack } from "@chakra-ui/react";
 
 import { RiArrowLeftSLine } from "react-icons/ri";
-
 import { useCart } from "../../hooks/useCart";
 import { CartItemCard } from "./CartItemCard";
 
-export const ItensSection = () => {
+export const ItensSection = (): JSX.Element => {
   const { cart } = useCart();
 
   return (
@@ -17,7 +16,9 @@ export const ItensSection = () => {
       }}
     >
       <Flex justifyContent="space-between">
-        <Text fontWeight='medium' fontSize="1.4rem">Products</Text>
+        <Text fontWeight="medium" fontSize="1.4rem">
+          Products
+        </Text>
         <Button
           leftIcon={<RiArrowLeftSLine />}
           colorScheme="pink"
@@ -28,7 +29,7 @@ export const ItensSection = () => {
       </Flex>
       <Stack>
         {cart.map((cartItem) => (
-          <CartItemCard {...cartItem} />
+          <CartItemCard key={cartItem.id} {...cartItem} />
         ))}
       </Stack>
     </Stack>

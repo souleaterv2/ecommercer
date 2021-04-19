@@ -6,7 +6,7 @@ import { CheckoutSection } from "../components/Cart/CheckoutSection";
 import { useCart } from "../hooks/useCart";
 import { EmptyCart } from "../components/Cart/EmptyCart";
 
-export default function Cart() {
+export default function Cart(): JSX.Element {
   const { cartQuantity } = useCart();
   return (
     <>

@@ -1,3 +1,5 @@
+import { useSession } from "next-auth/client";
+import { useRouter } from "next/dist/client/router";
 import { createContext, useContext, useState } from "react";
 
 interface GlobalContextData {
@@ -9,8 +11,13 @@ const GlobalContext = createContext<GlobalContextData>({} as GlobalContextData);
 
 export const GlobalContextProvider: React.FC = ({ children }) => {
   const [isLoginModelOpen, setIsLoginModelOpen] = useState(false);
-
+  const [session] = useSession();
+  const { push } = useRouter();
   function handleLoginModel() {
+    if (session) {
+      push("/profile");
+      return;
+    }
     setIsLoginModelOpen(!isLoginModelOpen);
   }
 

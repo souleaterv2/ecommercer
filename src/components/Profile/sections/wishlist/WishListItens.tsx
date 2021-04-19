@@ -1,5 +1,4 @@
-import React from "react";
-
+import { signOut } from "next-auth/client";
 import {
   Stack,
   Flex,
@@ -20,7 +19,7 @@ interface WishListItensProps {
   content: FaunaProduct[];
 }
 
-export const WishListItens = ({ content }: WishListItensProps) => {
+export const WishListItens = ({ content }: WishListItensProps): JSX.Element => {
   const isInLargeScreen = useBreakpointValue({
     base: false,
     lg: true,
@@ -38,6 +37,7 @@ export const WishListItens = ({ content }: WishListItensProps) => {
             leftIcon={<RiLogoutBoxFill />}
             colorScheme="pink"
             variant="solid"
+            onClick={() => signOut()}
           >
             Sign out
           </Button>

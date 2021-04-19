@@ -1,10 +1,10 @@
 import { Box, Text, Divider, Input, Button, Stack } from "@chakra-ui/react";
 
 import { RiBankCard2Line } from "react-icons/ri";
-
 import { useCart } from "../../hooks/useCart";
 
-export const CheckoutSection = () => {
+
+export function CheckoutSection(): JSX.Element {
   const { calcCartPrice } = useCart();
 
   return (
@@ -12,7 +12,7 @@ export const CheckoutSection = () => {
       <Stack paddingY='6' paddingX='4' borderRadius="lg" color="gray.600" backgroundColor="white">
         <Box textAlign="center">
           <Text fontWeight="semibold" fontSize="2xl">
-            Subtotal
+                    Subtotal
           </Text>
           <Text fontSize="lg">{calcCartPrice()}</Text>
         </Box>
@@ -20,7 +20,7 @@ export const CheckoutSection = () => {
         <Stack border="ButtonFace" borderRadius="md">
           <Input placeholder="Promo code" focusBorderColor="pink.500" />
           <Button w="100%" variant="outline" colorScheme="pink">
-            Apply pormo code
+                       Apply pormo code
           </Button>
         </Stack>
         <Button
@@ -34,4 +34,4 @@ export const CheckoutSection = () => {
       </Stack>
     </Box>
   );
-};
+}
