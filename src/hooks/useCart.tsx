@@ -1,10 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
+import { useToast } from "@chakra-ui/toast";
+
 import Cookies from "js-cookie";
+
+
 import { FaunaProduct, FaunaStock } from "../@Types";
 import { api } from "../services/api";
 import { formatPrice } from "../util/formatPrice";
-import { useToast } from "@chakra-ui/toast";
 
 interface CartItem extends FaunaProduct {
   quantity: number;
@@ -15,10 +18,6 @@ type CheckoutCartData = {
   quantity: number;
 };
 
-interface CalcCartPriceOptions {
-  converted?: boolean;
-  discount?: number;
-}
 interface CartContextData {
   cart: CartItem[];
   addToCar: (product: FaunaProduct) => Promise<void>;
@@ -28,6 +27,7 @@ interface CartContextData {
   addProductQuanty: (productID: string, quantity: number) => Promise<void>;
   convertCartToCheckout: () => CheckoutCartData[];
   addDiscount: (percent: number) => void;
+  clearCart: () => void;
 }
 
 const CartContext = createContext({} as CartContextData);
@@ -150,11 +150,17 @@ export const CartContextProvider: React.FC = ({ children }) => {
     setDiscount(percent);
   }
 
+  function clearCart() {
+    setCart([]);
+    Cookies.remove("StylesUP:cart", { path: "/" });
+  }
+
   return (
     <CartContext.Provider
       value={{
         convertCartToCheckout,
         cart,
+        clearCart,
         addDiscount,
         cartQuantity: cart.length,
         addToCar,
