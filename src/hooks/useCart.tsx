@@ -4,18 +4,29 @@ import Cookies from "js-cookie";
 import { FaunaProduct, FaunaStock } from "../@Types";
 import { api } from "../services/api";
 import { formatPrice } from "../util/formatPrice";
+import { useToast } from "@chakra-ui/toast";
 
 interface CartItem extends FaunaProduct {
   quantity: number;
 }
 
+type CheckoutCartData = {
+  price: string;
+  quantity: number;
+};
+
+interface CalcCartPriceOptions {
+  converted?: boolean;
+  discount?: number;
+}
 interface CartContextData {
   cart: CartItem[];
   addToCar: (product: FaunaProduct) => Promise<void>;
   cartQuantity: number;
-  calcCartPrice: () => string;
+  calcCartPrice: (options?: CalcCartPriceOptions) => string | number;
   removeFromCart: (productID: string) => void;
   addProductQuanty: (productID: string, quantity: number) => Promise<void>;
+  convertCartToCheckout: () => CheckoutCartData[];
 }
 
 const CartContext = createContext({} as CartContextData);
@@ -30,21 +41,55 @@ export const CartContextProvider: React.FC = ({ children }) => {
     return [];
   });
 
+  const toast = useToast();
+
   useEffect(() => {
     Cookies.set("StylesUP:cart", cart, { expires: 31, path: "/" });
   }, [cart]);
 
-  function calcCartPrice() {
-    const total = cart.reduce((acc, cartIem) => {
+  function calcCartPrice({
+    converted ,
+    discount ,
+  }: CalcCartPriceOptions) {
+    let total = cart.reduce((acc, cartIem) => {
       return (acc += cartIem.price.value * cartIem.quantity);
     }, 0);
-    const priveConverted = formatPrice(total);
 
-    return priveConverted;
+    if (discount > 0) {
+      total = total * (discount / 100);
+    }
+
+    if (converted) {
+      const priveConverted = formatPrice(total);
+      return priveConverted;
+    }
+
+    return total;
+  }
+
+  function updateQuantity(productID: string, quantity: number) {
+    const newCart = cart.map((item) => {
+      if (item.id === productID) {
+        item.quantity = quantity;
+      }
+      return item;
+    });
+    setCart(newCart);
   }
 
   async function addProductQuanty(productID: string, quantity: number) {
     if (quantity <= 0) {
+      return;
+    }
+
+    const cartItem = cart.find((item) => item.id === productID);
+
+    if (!cartItem) {
+      return;
+    }
+
+    if (cartItem.quantity > quantity) {
+      updateQuantity(productID, quantity);
       return;
     }
 
@@ -55,22 +100,20 @@ export const CartContextProvider: React.FC = ({ children }) => {
         })
       ).data;
 
-      if (cart.some((item) => item.id === productID)) {
-        if (stock.quantity > quantity) {
-          const newCart = cart.map((item) => {
-            if (item.id === productID) {
-              item.quantity++;
-            }
-            return item;
-          });
-          setCart(newCart);
-          return;
-        }
-
-        throw new Error("Ordered quantity out of stock.");
+      if (stock.quantity > quantity) {
+        updateQuantity(productID, quantity);
+        return;
       }
+
+      throw new Error("Ordered quantity out of stock.");
     } catch (error) {
-      throw new Error(error.message);
+      toast({
+        title: "Cart",
+        description: error.message,
+        duration: 3000,
+        isClosable: true,
+        status: "warning",
+      });
     }
   }
 
@@ -98,9 +141,21 @@ export const CartContextProvider: React.FC = ({ children }) => {
     }
   }
 
+  function convertCartToCheckout(): CheckoutCartData[] {
+    const cartCoverted = cart.map((item) => {
+      return {
+        price: item.price.stripeId,
+        quantity: item.quantity,
+      };
+    });
+
+    return cartCoverted;
+  }
+
   return (
     <CartContext.Provider
       value={{
+        convertCartToCheckout,
         cart,
         cartQuantity: cart.length,
         addToCar,
@@ -114,6 +169,6 @@ export const CartContextProvider: React.FC = ({ children }) => {
   );
 };
 
-export function useCart() {
+export function useCart(): CartContextData {
   return useContext(CartContext);
 }

@@ -16,7 +16,10 @@ interface InputNumberProps extends NumberInputProps {
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const InputNumber = ({ name, label, ...rest }: InputNumberProps) => {
+export const InputNumber = ({
+  label,
+  ...rest
+}: InputNumberProps): JSX.Element => {
   return (
     <FormControl>
       {!!label && <FormLabel>{label}</FormLabel>}

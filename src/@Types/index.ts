@@ -14,6 +14,7 @@ export enum FaunaCollections {
   products = "products",
   stock = "stock",
   users = "users",
+  coupons = "coupons",
 }
 
 export enum StockIndex {
@@ -22,6 +23,10 @@ export enum StockIndex {
 
 export enum UserIndex {
   email = "find_user_by_email",
+}
+
+export enum CouponIndex {
+  name = "find_by_name",
 }
 
 export type FaunaUser = {
@@ -48,6 +53,11 @@ export type FaunaProduct = {
   category: string;
 };
 
+export type FaunaCoupon = {
+  id: string;
+  name: string;
+};
+
 export type FaunaCollectioData<T> = {
   ref: {
     id: string;
@@ -56,7 +66,7 @@ export type FaunaCollectioData<T> = {
   data: T;
 };
 
-export type FaunaGetCollection<T> = {
+export type FaunaGetCollections<T> = {
   data: {
     ref: {
       id: string;
