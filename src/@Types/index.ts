@@ -17,6 +17,8 @@ export enum FaunaCollections {
   coupons = "coupons",
 }
 
+//Fauna Index
+
 export enum StockIndex {
   id = "find_by_product_id",
 }
@@ -28,6 +30,8 @@ export enum UserIndex {
 export enum CouponIndex {
   name = "find_by_name",
 }
+
+//Fauna Collections
 
 export type FaunaUser = {
   id: string;
@@ -58,6 +62,8 @@ export type FaunaCoupon = {
   name: string;
 };
 
+//Fauna Data types
+
 export type FaunaCollectioData<T> = {
   ref: {
     id: string;
@@ -86,3 +92,5 @@ export type Card = {
   owner: string;
   expires: string;
 };
+
+//Aplication types

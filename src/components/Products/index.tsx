@@ -6,6 +6,7 @@ interface ProductsProps {
 }
 
 export const Products = ({ content }: ProductsProps) => {
+ 
   return (
     <>
       {content.map((product) => (

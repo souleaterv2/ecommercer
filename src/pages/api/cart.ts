@@ -8,6 +8,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { productID } = req.body;
     try {
+      console.log("cart", productID);
       const stock = await fauncaClient.query<FaunaCollectioData<FaunaStock>>(
         q.Get(q.Match(q.Index(StockIndex.id), productID))
       );

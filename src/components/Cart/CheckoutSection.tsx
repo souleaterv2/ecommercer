@@ -6,6 +6,8 @@ import {
   Button,
   Stack,
   useToast,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/client";
 import { useEffect, useState } from "react";
@@ -20,9 +22,11 @@ import { getStripeJs } from "../../services/stripe-js";
 export function CheckoutSection(): JSX.Element {
   const [isLoadingCheckout, setIsLoadingCheckout] = useState(false);
   const [isLoadingCoupon, setIsLoadingCoupon] = useState(false);
+  const [isCouponValid, seIsCouponValid] = useState(false);
   const [discounts, setDiscounts] = useState<Stripe.Coupon>(
     {} as Stripe.Coupon
   );
+
   const [coupon, setCoupon] = useState("");
   const { calcCartPrice, convertCartToCheckout, addDiscount } = useCart();
   const { handleLoginModel } = useGlobal();
@@ -32,6 +36,12 @@ export function CheckoutSection(): JSX.Element {
   useEffect(() => {
     addDiscount(discounts.percent_off ?? 0);
   }, [discounts]);
+
+  function handleCouponChangeEvent(event: React.ChangeEvent<HTMLInputElement>) {
+    if(!isCouponValid) {
+      setCoupon(event.target.value)
+    }
+  }
 
   async function handeAddCouponButton() {
     if (coupon !== "") {
@@ -55,6 +65,7 @@ export function CheckoutSection(): JSX.Element {
 
         setDiscounts(stripeCoupon);
         setIsLoadingCoupon(false);
+        seIsCouponValid(true);
       } catch {
         toast({
           title: "Coupon",
@@ -62,7 +73,10 @@ export function CheckoutSection(): JSX.Element {
           isClosable: true,
           status: "error",
         });
+
         setIsLoadingCoupon(false);
+        addDiscount(0);
+        seIsCouponValid(false);
       }
     }
   }
@@ -115,18 +129,27 @@ export function CheckoutSection(): JSX.Element {
         </Box>
         <Divider />
         <Stack border="ButtonFace" borderRadius="md">
-          <Input
-            placeholder="Promo code"
-            value={coupon}
-            onChange={(event) => setCoupon(event.target.value)}
-            focusBorderColor="pink.500"
-          />
+          <InputGroup size="lg">
+            <Input
+              placeholder="Promo code"
+              value={coupon}
+              onChange={handleCouponChangeEvent}
+              focusBorderColor="pink.500"
+            />
+            <InputRightElement marginX="2">
+              <Button colorScheme="pink" size="sm" onClick={ ()=> seIsCouponValid(false)}>
+                Change
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+
           <Button
             onClick={handeAddCouponButton}
             w="100%"
             variant="outline"
             colorScheme="pink"
             isLoading={isLoadingCoupon}
+            isDisabled={isCouponValid}
           >
             Apply promo code
           </Button>

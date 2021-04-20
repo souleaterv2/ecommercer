@@ -1,4 +1,13 @@
-import { Flex, Button, Text, Stack, HStack } from "@chakra-ui/react";
+import {
+  Flex,
+  Button,
+  Text,
+  Stack,
+  HStack,
+  Center,
+  Spinner,
+} from "@chakra-ui/react";
+import { useState } from "react";
 
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { AiOutlineClear } from "react-icons/ai";
@@ -7,7 +16,16 @@ import { useCart } from "../../hooks/useCart";
 import { CartItemCard } from "./CartItemCard";
 
 export const ItensSection = (): JSX.Element => {
+  const [isCleaning, seIsCleaning] = useState(false);
   const { cart, clearCart } = useCart();
+
+  function handleClearCart() {
+    seIsCleaning(true);
+    setTimeout(() => {
+      clearCart()
+      seIsCleaning(false);
+    }, 1000);
+  }
 
   return (
     <Stack
@@ -26,7 +44,7 @@ export const ItensSection = (): JSX.Element => {
             leftIcon={<AiOutlineClear />}
             colorScheme="pink"
             variant="solid"
-            onClick={() => clearCart()}
+            onClick={handleClearCart}
           >
             Clear cart
           </Button>
@@ -39,10 +57,18 @@ export const ItensSection = (): JSX.Element => {
           </Button>
         </HStack>
       </Flex>
-      <Stack>
-        {cart.map((cartItem) => (
-          <CartItemCard key={cartItem.id} {...cartItem} />
-        ))}
+      <Stack >
+        {isCleaning ? (
+          <Center padding='32' >
+            <Spinner  size='lg'/>
+          </Center>
+        ) : (
+          <>
+            {cart.map((cartItem) => (
+              <CartItemCard key={cartItem.id} {...cartItem} />
+            ))}
+          </>
+        )}
       </Stack>
     </Stack>
   );

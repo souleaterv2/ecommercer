@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { useEffect } from "react";
 
-import { Center, Stack, Text, Image, Button } from "@chakra-ui/react";
+import { Stack, Text, Image, Button } from "@chakra-ui/react";
 import { Container } from "../../components/Container";
 import { useCart } from "../../hooks/useCart";
 
@@ -17,7 +17,7 @@ export default function SuccessesCheckout(): JSX.Element {
     <Container display="flex" alignItems="center" justifyContent="center">
       <Stack>
         <Image
-          marginX='auto'
+          marginX="auto"
           w={{
             base: "160px",
             lg: "200px",
@@ -27,7 +27,7 @@ export default function SuccessesCheckout(): JSX.Element {
         />
         <Text>Your purchase was a success</Text>
         <Link href="/">
-          <Button cursor='pointer'  as="a" colorScheme="pink" size="sm">
+          <Button cursor="pointer" as="a" colorScheme="pink" size="sm">
             Continue shipping
           </Button>
         </Link>

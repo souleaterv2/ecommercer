@@ -1,6 +1,8 @@
 import { useToast } from "@chakra-ui/toast";
 import { useSession } from "next-auth/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+
 import { FaunaProduct } from "../@Types";
 
 export interface WishlistData {
@@ -11,9 +13,20 @@ export interface WishlistData {
 }
 
 export function useWishlist(): WishlistData {
-  const [wishlistItens, setWishlistItens] = useState<FaunaProduct[]>([]);
+  const [wishlistItens, setWishlistItens] = useState<FaunaProduct[]>(() => {
+    const wishlist = Cookies.getJSON("StylesUP:wishlist");
+    if (wishlist) {
+      return wishlist;
+    }
+
+    return [];
+  });
   const [session] = useSession();
   const toast = useToast();
+
+  useEffect(() => {
+    Cookies.set("StylesUP:wishlist", wishlistItens);
+  }, [wishlistItens]);
 
   function addToWishlist(product: FaunaProduct) {
     if (!session) {

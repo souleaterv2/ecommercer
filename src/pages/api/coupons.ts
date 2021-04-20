@@ -18,7 +18,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
       couponId = response.data.id;
     } catch {
-      res.status(404).end("Coupon not cadastred on database");
+      return res.status(404).end("Coupon not cadastred on database");
     }
 
     try {

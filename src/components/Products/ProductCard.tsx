@@ -7,6 +7,7 @@ import {
   chakra,
   Icon,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 
 import { motion, HTMLMotionProps } from "framer-motion";
@@ -17,7 +18,6 @@ import { formatPrice } from "../../util/formatPrice";
 import { useCart } from "../../hooks/useCart";
 import { useState } from "react";
 import { FaunaProduct } from "../../@Types";
-import { useWishlist } from "../../hooks/useWishList";
 import { useProfile } from "../../context/ProfileContext";
 
 type Merge<P, T> = Omit<P, keyof T> & T;
@@ -31,23 +31,45 @@ export const ProductCard = ({
   image,
   name,
   price,
-}: FaunaProduct) => {
+}: FaunaProduct): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const { addToCar } = useCart();
-  const { wishlist } = useProfile();
-
-  const { addToWishlist } = wishlist;
+  const { addToWishlist } = useProfile().wishlist;
+  const toast = useToast();
 
   async function handleAddButton() {
     setIsLoading(true);
-    await addToCar({
-      category,
-      id,
-      image,
-      name,
-      price,
-    });
-    setIsLoading(false);
+    try {
+      await addToCar({
+        category,
+        id,
+        image,
+        name,
+        price,
+      });
+      setIsLoading(false);
+
+      toast({
+        title: "Cart",
+        description: "successful add to cart",
+        duration: 3000,
+        isClosable: true,
+        status: "success",
+      });
+
+    } catch (err) {
+      if (err.message === "its already on the card") {
+        toast({
+          title: "Cart",
+          description: err.message,
+          duration: 1500,
+          isClosable: true,
+          status: "info",
+        });
+        setIsLoading(false)
+      }
+    }
+
   }
 
   function handleAddToWishlist() {
@@ -91,7 +113,7 @@ export const ProductCard = ({
         w="100%"
         colorScheme="pink"
       >
-        Add to your cart
+        Add to your Cart
       </Button>
       <Tooltip label="Wishlist" backgroundColor="gray.600" color="white">
         <Box

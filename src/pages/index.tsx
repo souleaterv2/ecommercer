@@ -8,8 +8,9 @@ import { Heading, Divider, Box, SimpleGrid } from "@chakra-ui/react";
 import {
   CarouselItem,
   FaunaCollections,
-  FaunaGetCollection,
+  FaunaGetCollections,
   FaunaProduct,
+  Product
 } from "../@Types";
 
 import { Carousel } from "../components/Carousel";
@@ -20,7 +21,7 @@ import { Products } from "../components/Products";
 
 interface HomeProps {
   carouselData: CarouselItem[];
-  products: FaunaProduct[];
+  products: Product[];
 }
 
 export default function Home({
@@ -52,7 +53,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const carouselData = (await jsonApi.get("/carousel")).data;
 
   const productsData = await fauncaClient.query<
-    FaunaGetCollection<FaunaProduct>
+    FaunaGetCollections<FaunaProduct>
   >(
     q.Map(
       q.Paginate(q.Documents(q.Collection(FaunaCollections.products))),
@@ -62,6 +63,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const products = productsData.data.map((doc) => ({
     id: doc.ref.id,
+    isInCart: false,
     ...doc.data,
   }));
 

@@ -4,7 +4,6 @@ import { useToast } from "@chakra-ui/toast";
 
 import Cookies from "js-cookie";
 
-
 import { FaunaProduct, FaunaStock } from "../@Types";
 import { api } from "../services/api";
 import { formatPrice } from "../util/formatPrice";
@@ -124,7 +123,11 @@ export const CartContextProvider: React.FC = ({ children }) => {
         setCart([...cart, { ...product, quantity: 1 }]);
         return;
       }
+
+      throw new Error("out of stock");
     }
+
+    throw new Error("its already on the card");
   }
 
   function removeFromCart(productID: string) {
