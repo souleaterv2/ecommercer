@@ -8,7 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { RiBankCard2Line } from "react-icons/ri";
 import { Stripe } from "stripe";
@@ -24,10 +24,14 @@ export function CheckoutSection(): JSX.Element {
     {} as Stripe.Coupon
   );
   const [coupon, setCoupon] = useState("");
-  const { calcCartPrice, convertCartToCheckout } = useCart();
+  const { calcCartPrice, convertCartToCheckout, addDiscount } = useCart();
   const { handleLoginModel } = useGlobal();
   const [session] = useSession();
   const toast = useToast();
+
+  useEffect(() => {
+    addDiscount(discounts.percent_off ?? 0);
+  }, [discounts]);
 
   async function handeAddCouponButton() {
     if (coupon !== "") {
@@ -81,7 +85,7 @@ export function CheckoutSection(): JSX.Element {
 
     const response = await api.post("/checkoutSession", {
       line_items,
-      discounts,
+      discounts: [{ coupon: discounts.id }],
     });
 
     const { sessionId } = response.data;
@@ -107,12 +111,7 @@ export function CheckoutSection(): JSX.Element {
           <Text fontWeight="semibold" fontSize="2xl">
             Subtotal
           </Text>
-          <Text fontSize="lg">
-            {calcCartPrice({
-              converted: true,
-              discount: discounts.percent_off ?? 0,
-            })}
-          </Text>
+          <Text fontSize="lg">{calcCartPrice()}</Text>
         </Box>
         <Divider />
         <Stack border="ButtonFace" borderRadius="md">
@@ -128,7 +127,6 @@ export function CheckoutSection(): JSX.Element {
             variant="outline"
             colorScheme="pink"
             isLoading={isLoadingCoupon}
-            isDisabled={!!discounts}
           >
             Apply promo code
           </Button>

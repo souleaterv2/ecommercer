@@ -17,9 +17,8 @@ export default async function (
 ): Promise<void> {
   if (req.method === "POST") {
     const { user } = await getSession({ req });
-    const { checkout } = req.body;
 
-    const { line_items, discounts } = checkout;
+    const { line_items, discounts } = req.body;
 
     const faunaUser = await fauncaClient.query<FaunaCollectioData<FaunaUser>>(
       q.Get(q.Match(q.Index(UserIndex.email), q.Casefold(user.email)))
@@ -52,7 +51,6 @@ export default async function (
       billing_address_collection: "auto",
       line_items,
       mode: "payment",
-      allow_promotion_codes: true,
       discounts,
       success_url: process.env.STRIPE_SUCCES_URL,
       cancel_url: process.env.STRIPE_CANCEL_URL,

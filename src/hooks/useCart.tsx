@@ -23,10 +23,11 @@ interface CartContextData {
   cart: CartItem[];
   addToCar: (product: FaunaProduct) => Promise<void>;
   cartQuantity: number;
-  calcCartPrice: (options?: CalcCartPriceOptions) => string | number;
+  calcCartPrice: () => string | number;
   removeFromCart: (productID: string) => void;
   addProductQuanty: (productID: string, quantity: number) => Promise<void>;
   convertCartToCheckout: () => CheckoutCartData[];
+  addDiscount: (percent: number) => void;
 }
 
 const CartContext = createContext({} as CartContextData);
@@ -40,17 +41,14 @@ export const CartContextProvider: React.FC = ({ children }) => {
 
     return [];
   });
-
+  const [discount, setDiscount] = useState(0);
   const toast = useToast();
 
   useEffect(() => {
     Cookies.set("StylesUP:cart", cart, { expires: 31, path: "/" });
   }, [cart]);
 
-  function calcCartPrice({
-    converted ,
-    discount ,
-  }: CalcCartPriceOptions) {
+  function calcCartPrice() {
     let total = cart.reduce((acc, cartIem) => {
       return (acc += cartIem.price.value * cartIem.quantity);
     }, 0);
@@ -59,12 +57,8 @@ export const CartContextProvider: React.FC = ({ children }) => {
       total = total * (discount / 100);
     }
 
-    if (converted) {
-      const priveConverted = formatPrice(total);
-      return priveConverted;
-    }
-
-    return total;
+    const priveConverted = formatPrice(total);
+    return priveConverted;
   }
 
   function updateQuantity(productID: string, quantity: number) {
@@ -152,11 +146,16 @@ export const CartContextProvider: React.FC = ({ children }) => {
     return cartCoverted;
   }
 
+  function addDiscount(percent: number) {
+    setDiscount(percent);
+  }
+
   return (
     <CartContext.Provider
       value={{
         convertCartToCheckout,
         cart,
+        addDiscount,
         cartQuantity: cart.length,
         addToCar,
         calcCartPrice,
