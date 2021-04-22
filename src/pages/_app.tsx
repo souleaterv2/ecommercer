@@ -5,8 +5,10 @@ import { Header } from "../components/header";
 import { theme } from "../styles/theme";
 
 import { GlobalContextProvider } from "../hooks/useGlobal";
-import { CartContextProvider } from "../hooks/useCart";
+
 import { ProfileContextProvider } from "../context/ProfileContext";
+import { CartProvider } from "../context/CartContext";
+
 import { Provider as NextAuthProvider } from "next-auth/client";
 
 import { LoginModal } from "../components/modals/LoginModal";
@@ -19,12 +21,12 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     <ChakraProvider theme={theme}>
       <NextAuthProvider session={pageProps.session}>
         <GlobalContextProvider>
-          <CartContextProvider>
+          <CartProvider>
             <ProfileContextProvider>
               <Header />
               <Component {...pageProps} />
             </ProfileContextProvider>
-          </CartContextProvider>
+          </CartProvider>
           <LoginModal />
           <CSSReset />
         </GlobalContextProvider>

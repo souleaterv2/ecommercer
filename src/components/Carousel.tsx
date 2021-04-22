@@ -10,7 +10,7 @@ SwiperCore.use([Navigation, Pagination]);
 interface CarouselProps {
   content: CarouselItem[];
 }
-export const Carousel = ({ content }: CarouselProps) => {
+export const Carousel = ({ content }: CarouselProps): JSX.Element => {
   return (
     <Swiper
       spaceBetween={0}
@@ -36,31 +36,17 @@ export const Carousel = ({ content }: CarouselProps) => {
               }}
             >
               <Center textAlign="center" flexDirection="column">
-                <Text
-                  fontSize={{
-                    base: "2xl",
-                    md: "3xl",
-                  }}
-                >
-                  {item.text.paragraph1}
-                </Text>
-                <Text
-                  fontWeight="semibold"
-                  fontSize={{
-                    base: "3xl",
-                    md: "4xl",
-                  }}
-                >
-                  {item.text.paragraph2}
-                </Text>
-                <Text
-                  fontSize={{
-                    base: "2xl",
-                    md: "3xl",
-                  }}
-                >
-                  {item.text.paragraph3}
-                </Text>
+                {item.text.map((text, index) => (
+                  <Text
+                    key={index}
+                    fontSize={{
+                      base: "2xl",
+                      md: "3xl",
+                    }}
+                  >
+                    {text}
+                  </Text>
+                ))}
               </Center>
               <Center>
                 <Image src={item.image} alt="slide_image" objectFit="contain" />

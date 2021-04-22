@@ -1,19 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
-import { query as q } from "faunadb";
-import { FaunaCollectioData, FaunaStock, StockIndex } from "../../@Types";
-import { fauncaClient } from "../../services/fauna";
+import { firebaseClient } from "../../services/firebase-js";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { productID } = req.body;
     try {
-      console.log("cart", productID);
-      const stock = await fauncaClient.query<FaunaCollectioData<FaunaStock>>(
-        q.Get(q.Match(q.Index(StockIndex.id), productID))
-      );
-
-      res.json(stock.data);
+      const response = await firebaseClient
+        .getFirestore()
+        .collection("products")
+        .where("id", "==", productID)
+        .get();
     } catch (error) {
       console.log(error.mensagem);
     }

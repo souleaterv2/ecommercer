@@ -1,8 +1,8 @@
-import { FaunaProduct } from "../../@Types";
+import { Product } from "../../@Types";
 import { ProductCard } from "./ProductCard";
 
 interface ProductsProps {
-  content: FaunaProduct[];
+  content: Product[];
 }
 
 export const Products = ({ content }: ProductsProps) => {

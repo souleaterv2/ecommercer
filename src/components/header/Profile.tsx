@@ -7,7 +7,8 @@ import { useGlobal } from "../../hooks/useGlobal";
 import { useProfile } from "../../context/ProfileContext";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
-import { useCart } from "../../hooks/useCart";
+import { useCartContext } from "../../context/CartContext";
+import { formatPrice } from "../../util/formatPrice";
 
 const fontSize = "1.3rem";
 
@@ -18,7 +19,7 @@ interface ProfileProps {
 export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
   const [session] = useSession();
   const { push } = useRouter();
-  const { cartQuantity, calcCartPrice } = useCart();
+  const { cartState } = useCartContext();
   const { handleLoginModel } = useGlobal();
   const { wishlistQuantity } = useProfile().wishlist;
   const toast = useToast();
@@ -81,14 +82,14 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
             color: "pink.500",
           }}
         >
-          <Badger value={cartQuantity}>
+          <Badger value={cartState.totalItensOnCart}>
             <Icon fontSize={fontSize} as={RiShoppingCart2Line} />
           </Badger>
           {isInLargeScreen && (
             <Box>
               <Text fontSize="0.9rem">My Cart</Text>
               <Text fontSize="0.95rem" fontWeight="semibold">
-                {calcCartPrice()}
+                {formatPrice(cartState.totalPrice)}
               </Text>
             </Box>
           )}

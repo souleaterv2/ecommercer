@@ -1,96 +1,69 @@
-export type CarouselItem = {
-  id: number;
-  image: string;
-  text: {
-    paragraph1: string;
-    paragraph2: string;
-    paragraph3: string;
-  };
-};
-
-//#Fauna types
-
-export enum FaunaCollections {
-  products = "products",
-  stock = "stock",
-  users = "users",
-  coupons = "coupons",
+interface ProductImage {
+  url: string;
+  alt?: string;
 }
 
-//Fauna Index
-
-export enum StockIndex {
-  id = "find_by_product_id",
+export interface Discount {
+  value: number;
 }
 
-export enum UserIndex {
-  email = "find_user_by_email",
-}
-
-export enum CouponIndex {
-  name = "find_by_name",
-}
-
-//Fauna Collections
-
-export type FaunaUser = {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-  stripe_customer_id: string;
-};
-
-export type FaunaStock = {
+export type Stock = {
   id: string;
   quantity: number;
 };
 
-export type FaunaProduct = {
+export interface Variants {
+  isInCart?: boolean;
+  isInStock?: boolean;
+  lastPrice?: number;
+  availableForSales?: boolean;
+}
+
+export type Product = {
   id: string;
-  name: string;
-  image: string;
-  price: {
-    stripeId: string;
-    value: number;
-  };
   category: string;
+  name: string;
+  images: ProductImage[];
+  price: number;
+  variants: Variants;
 };
 
-export type FaunaCoupon = {
+export type CartItem = {
   id: string;
   name: string;
+  category: string;
+  quantity: number;
+  price: number;
+  image: string;
 };
 
-//Fauna Data types
-
-export type FaunaCollectioData<T> = {
-  ref: {
-    id: string;
-  };
-  ts: string;
-  data: T;
+export type Cart = {
+  customerId?: string;
+  email?: string;
+  createdAt: string;
+  currency: string;
+  cartItens: CartItem[];
+  // the sum of all the prices of all the item in the cart.
+  // Duties, taxes, shipping and discounts exclued.
+  carItensSubTotalPrice: number;
+  //The sum of all the prices of all the item in the cart.
+  //Duties, taxes and discounts inclued.
+  totalItensOnCart: number;
+  totalPrice: number;
+  discounts?: Discount[];
 };
 
-export type FaunaGetCollections<T> = {
-  data: {
-    ref: {
-      id: string;
-    };
-    ts: string;
-    data: T;
-  }[];
-};
-
-///Profile types
-
-export type Flags = "Visa" | "Mastercard";
-
-export type Card = {
+export type CarouselItem = {
   id: number;
-  flag: Flags;
-  owner: string;
-  expires: string;
+  image: string;
+  text: string[];
 };
 
-//Aplication types
+export type CarouselData = {
+  itens: CarouselItem[];
+};
+
+export type User = {
+  displayName: string;
+  email: string;
+};

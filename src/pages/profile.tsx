@@ -7,10 +7,10 @@ import { Heading, Flex } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { Sidebar } from "../components/Profile/sections/sidebar/Sidebar";
 import { ProfileContent } from "../components/Profile/ProfileContent";
-import { FaunaUser } from "../@Types";
+import { User } from "../@Types";
 
 interface WishlistProps {
-  user: FaunaUser;
+  user: User;
 }
 
 export default function Wishlist({ user }: WishlistProps): JSX.Element {

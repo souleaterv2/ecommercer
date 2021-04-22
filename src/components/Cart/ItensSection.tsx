@@ -14,17 +14,15 @@ import { AiOutlineClear } from "react-icons/ai";
 
 import { useCart } from "../../hooks/useCart";
 import { CartItemCard } from "./CartItemCard";
+import { useCartContext } from "../../context/CartContext";
 
 export const ItensSection = (): JSX.Element => {
   const [isCleaning, seIsCleaning] = useState(false);
-  const { cart, clearCart } = useCart();
+  const { cartState } = useCartContext()
 
   function handleClearCart() {
     seIsCleaning(true);
-    setTimeout(() => {
-      clearCart()
-      seIsCleaning(false);
-    }, 1000);
+
   }
 
   return (
@@ -64,7 +62,7 @@ export const ItensSection = (): JSX.Element => {
           </Center>
         ) : (
           <>
-            {cart.map((cartItem) => (
+            {cartState.cartItens.map((cartItem) => (
               <CartItemCard key={cartItem.id} {...cartItem} />
             ))}
           </>

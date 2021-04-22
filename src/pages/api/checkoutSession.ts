@@ -1,14 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
-import { query as q } from "faunadb";
 
 import { fauncaClient } from "../../services/fauna";
-import {
-  FaunaCollectioData,
-  FaunaCollections,
-  FaunaUser,
-  UserIndex,
-} from "../../@Types";
+
 import { stripe } from "../../services/stripe";
 
 export default async function (
@@ -20,27 +14,12 @@ export default async function (
 
     const { line_items, discounts } = req.body;
 
-    const faunaUser = await fauncaClient.query<FaunaCollectioData<FaunaUser>>(
-      q.Get(q.Match(q.Index(UserIndex.email), q.Casefold(user.email)))
-    );
-
-    let customerID = faunaUser.data.stripe_customer_id;
+    let customerID = "rodrigo";
 
     if (!customerID) {
       const stripeCustomer = await stripe.customers.create({
         email: user.email,
       });
-
-      await fauncaClient.query(
-        q.Update(
-          q.Ref(q.Collection(FaunaCollections.users), faunaUser.ref.id),
-          {
-            data: {
-              stripe_customer_id: stripeCustomer.id,
-            },
-          }
-        )
-      );
 
       customerID = stripeCustomer.id;
     }

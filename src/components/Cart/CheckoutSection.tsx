@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 
 import { RiBankCard2Line } from "react-icons/ri";
 import { Stripe } from "stripe";
+import { useCartContext } from "../../context/CartContext";
 import { useCart } from "../../hooks/useCart";
 import { useGlobal } from "../../hooks/useGlobal";
 import { api } from "../../services/api";
@@ -28,18 +29,14 @@ export function CheckoutSection(): JSX.Element {
   );
 
   const [coupon, setCoupon] = useState("");
-  const { calcCartPrice, convertCartToCheckout, addDiscount } = useCart();
+  const { cartState } = useCartContext();
   const { handleLoginModel } = useGlobal();
   const [session] = useSession();
   const toast = useToast();
 
-  useEffect(() => {
-    addDiscount(discounts.percent_off ?? 0);
-  }, [discounts]);
-
   function handleCouponChangeEvent(event: React.ChangeEvent<HTMLInputElement>) {
-    if(!isCouponValid) {
-      setCoupon(event.target.value)
+    if (!isCouponValid) {
+      setCoupon(event.target.value);
     }
   }
 
@@ -75,7 +72,6 @@ export function CheckoutSection(): JSX.Element {
         });
 
         setIsLoadingCoupon(false);
-        addDiscount(0);
         seIsCouponValid(false);
       }
     }
@@ -95,7 +91,7 @@ export function CheckoutSection(): JSX.Element {
     }
 
     setIsLoadingCheckout(true);
-    const line_items = convertCartToCheckout();
+    const line_items = {};
 
     const response = await api.post("/checkoutSession", {
       line_items,
@@ -125,7 +121,7 @@ export function CheckoutSection(): JSX.Element {
           <Text fontWeight="semibold" fontSize="2xl">
             Subtotal
           </Text>
-          <Text fontSize="lg">{calcCartPrice()}</Text>
+          <Text fontSize="lg">{cartState.totalPrice}</Text>
         </Box>
         <Divider />
         <Stack border="ButtonFace" borderRadius="md">
@@ -137,7 +133,11 @@ export function CheckoutSection(): JSX.Element {
               focusBorderColor="pink.500"
             />
             <InputRightElement marginX="2">
-              <Button colorScheme="pink" size="sm" onClick={ ()=> seIsCouponValid(false)}>
+              <Button
+                colorScheme="pink"
+                size="sm"
+                onClick={() => seIsCouponValid(false)}
+              >
                 Change
               </Button>
             </InputRightElement>

@@ -15,10 +15,10 @@ import { motion, HTMLMotionProps } from "framer-motion";
 import { RiHeart2Line } from "react-icons/ri";
 
 import { formatPrice } from "../../util/formatPrice";
-import { useCart } from "../../hooks/useCart";
 import { useState } from "react";
-import { FaunaProduct } from "../../@Types";
+import { Product } from "../../@Types";
 import { useProfile } from "../../context/ProfileContext";
+import { useCartContext } from "../../context/CartContext";
 
 type Merge<P, T> = Omit<P, keyof T> & T;
 type MotionBoxProps = Merge<HTMLChakraProps<"div">, HTMLMotionProps<"div">>;
@@ -28,58 +28,29 @@ const MotionBox: React.FC<MotionBoxProps> = motion(chakra.div);
 export const ProductCard = ({
   id,
   category,
-  image,
+  images,
+  variants,
   name,
   price,
-}: FaunaProduct): JSX.Element => {
+}: Product): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const { addToCar } = useCart();
+  const { addToCart, cartState } = useCartContext();
   const { addToWishlist } = useProfile().wishlist;
   const toast = useToast();
 
   async function handleAddButton() {
-    setIsLoading(true);
-    try {
-      await addToCar({
-        category,
-        id,
-        image,
-        name,
-        price,
-      });
-      setIsLoading(false);
-
-      toast({
-        title: "Cart",
-        description: "successful add to cart",
-        duration: 3000,
-        isClosable: true,
-        status: "success",
-      });
-
-    } catch (err) {
-      if (err.message === "its already on the card") {
-        toast({
-          title: "Cart",
-          description: err.message,
-          duration: 1500,
-          isClosable: true,
-          status: "info",
-        });
-        setIsLoading(false)
-      }
-    }
-
-  }
-
-  function handleAddToWishlist() {
-    addToWishlist({
-      category,
+    const result = await addToCart({
       id,
-      image,
+      category,
+      images,
+      variants,
       name,
       price,
     });
+  }
+
+  function handleAddToWishlist() {
+    const rodrigo = " rodrigo";
   }
 
   return (
@@ -96,14 +67,14 @@ export const ProductCard = ({
       }}
       cursor="pointer"
     >
-      <Image src={image} alt="product_image" />
+      <Image src={images[0].url} alt="product_image" />
       <Box flex={1} padding="2">
         <Text fontSize="sm">{category}</Text>
         <Text fontWeight="bold" fontSize="sm">
           {name}
         </Text>
         <Text fontWeight="semibold" color="blue.500" fontSize="sm">
-          {formatPrice(price.value)}
+          {formatPrice(price)}
         </Text>
       </Box>
       <Button

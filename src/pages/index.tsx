@@ -1,23 +1,14 @@
 import Head from "next/head";
 import { GetStaticProps } from "next";
 
-import { query as q } from "faunadb";
-
 import { Heading, Divider, Box, SimpleGrid } from "@chakra-ui/react";
-
-import {
-  CarouselItem,
-  FaunaCollections,
-  FaunaGetCollections,
-  FaunaProduct,
-  Product
-} from "../@Types";
+import { db } from "../firebase";
 
 import { Carousel } from "../components/Carousel";
 import { Container } from "../components/Container";
-import { jsonApi } from "../services/api";
-import { fauncaClient } from "../services/fauna";
 import { Products } from "../components/Products";
+
+import { Product, CarouselItem } from "../@Types";
 
 interface HomeProps {
   carouselData: CarouselItem[];
@@ -50,22 +41,8 @@ export default function Home({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const carouselData = (await jsonApi.get("/carousel")).data;
-
-  const productsData = await fauncaClient.query<
-    FaunaGetCollections<FaunaProduct>
-  >(
-    q.Map(
-      q.Paginate(q.Documents(q.Collection(FaunaCollections.products))),
-      q.Lambda((doc) => q.Get(doc))
-    )
-  );
-
-  const products = productsData.data.map((doc) => ({
-    id: doc.ref.id,
-    isInCart: false,
-    ...doc.data,
-  }));
+  const carouselData = await db.getCollection<CarouselItem>("carousel");
+  const products = await db.getCollection<Product>("products");
 
   return {
     props: {

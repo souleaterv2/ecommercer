@@ -3,28 +3,25 @@ import { Flex, Image, Box, Text, Stack, Button, Icon } from "@chakra-ui/react";
 
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
-import { FaunaProduct } from "../../@Types";
+import { CartItem } from "../../@Types";
 import { formatPrice } from "../../util/formatPrice";
 import { InputNumber } from "../Form/InputNumber";
-import { useCart } from "../../hooks/useCart";
-
-interface cartItemCard extends FaunaProduct {
-  quantity: number;
-}
+import { useCartContext } from "../../context/CartContext";
 
 export const CartItemCard = ({
   id,
-  image,
   name,
   quantity,
   price,
-}: cartItemCard): JSX.Element => {
+  image,
+  category,
+}: CartItem): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const { addProductQuanty, removeFromCart } = useCart();
+  const { addQuantityToItem, removeFromCart } = useCartContext();
 
   async function handleQuantityProduct(value: string) {
     setIsLoading(true);
-    await addProductQuanty(id, Number(value));
+    await addQuantityToItem(id, Number(value));
     setIsLoading(false);
   }
 
@@ -42,7 +39,7 @@ export const CartItemCard = ({
         <Image w="160px" src={image} alt={name} />
         <Box>
           <Text fontWeight="semibold">{name}</Text>
-          <Text color="blue.500">{formatPrice(price.value)}</Text>
+          <Text color="blue.500">{formatPrice(price)}</Text>
         </Box>
       </Flex>
       <Stack
