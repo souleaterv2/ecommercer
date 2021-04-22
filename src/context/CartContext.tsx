@@ -10,7 +10,7 @@ const CartContex = createContext<CartContextData>({} as CartContextData);
 
 export const CartProvider: React.FC = ({ children }) => {
   const [cartState, functions] = useCart();
-  console.log(cartState)
+
   return (
     <CartContex.Provider
       value={{

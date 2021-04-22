@@ -19,6 +19,7 @@ export interface Setting {
   removeFromCart: (product: string) => Promise<void>;
   addQuantityToItem: (productId: string, quantity: number) => Promise<boolean>;
   setCartInfo: (cartInfo: CartInfo) => void;
+  clearCart: () => void;
 }
 
 type CartReturn = [Cart, Setting];
@@ -27,18 +28,16 @@ export function useCart(): CartReturn {
   const [state, dispatch] = useReducer(cartReducer, inicialState);
 
   useEffect(() => {
-    Cookies.set("StylesUP:cart", state);
-  }, [state]);
-
-  useEffect(() => {
     const state = Cookies.getJSON("StylesUP:cart");
     if (state) {
-      dispatch({ type: "RELOAD_CART", payload: state });
+      console.log("Cookie =>", state);
+      dispatch({ type: "RESET_CART_STATE", payload: state });
     }
   }, []);
 
   useEffect(() => {
     dispatch({ type: "SET_TOTAL_PRICE" });
+    dispatch({ type: "SET_TOTAL_OF_INTENS_ON_CART" });
   }, [state.cartItens]);
 
   async function addToCart(product: Product) {
@@ -86,6 +85,10 @@ export function useCart(): CartReturn {
     }
   }
 
+  function clearCart() {
+    dispatch({ type: "RESET_CART_ITENS" });
+  }
+
   function setCartInfo(
     cartInfo: CartInfo = {
       createdAt: null,
@@ -124,6 +127,7 @@ export function useCart(): CartReturn {
   }
 
   const data: Setting = {
+    clearCart,
     addQuantityToItem,
     addToCart,
     removeFromCart,

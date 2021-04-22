@@ -12,17 +12,20 @@ import { useState } from "react";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { AiOutlineClear } from "react-icons/ai";
 
-import { useCart } from "../../hooks/useCart";
 import { CartItemCard } from "./CartItemCard";
 import { useCartContext } from "../../context/CartContext";
 
 export const ItensSection = (): JSX.Element => {
   const [isCleaning, seIsCleaning] = useState(false);
-  const { cartState } = useCartContext()
+  const { cartState, clearCart } = useCartContext();
 
   function handleClearCart() {
     seIsCleaning(true);
 
+    setTimeout(() => {
+      clearCart();
+      seIsCleaning(false);
+    }, 1000);
   }
 
   return (
@@ -55,10 +58,10 @@ export const ItensSection = (): JSX.Element => {
           </Button>
         </HStack>
       </Flex>
-      <Stack >
+      <Stack>
         {isCleaning ? (
-          <Center padding='32' >
-            <Spinner  size='lg'/>
+          <Center padding="32">
+            <Spinner size="lg" />
           </Center>
         ) : (
           <>

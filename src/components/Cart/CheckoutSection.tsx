@@ -19,6 +19,7 @@ import { useCart } from "../../hooks/useCart";
 import { useGlobal } from "../../hooks/useGlobal";
 import { api } from "../../services/api";
 import { getStripeJs } from "../../services/stripe-js";
+import { formatPrice } from "../../util/formatPrice";
 
 export function CheckoutSection(): JSX.Element {
   const [isLoadingCheckout, setIsLoadingCheckout] = useState(false);
@@ -121,7 +122,7 @@ export function CheckoutSection(): JSX.Element {
           <Text fontWeight="semibold" fontSize="2xl">
             Subtotal
           </Text>
-          <Text fontSize="lg">{cartState.totalPrice}</Text>
+          <Text fontSize="lg">{formatPrice(cartState.totalPrice)}</Text>
         </Box>
         <Divider />
         <Stack border="ButtonFace" borderRadius="md">
