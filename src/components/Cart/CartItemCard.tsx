@@ -14,7 +14,6 @@ export const CartItemCard = ({
   quantity,
   price,
   image,
-  category,
 }: CartItem): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const { addQuantityToItem, removeFromCart } = useCartContext();

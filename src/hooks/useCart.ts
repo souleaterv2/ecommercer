@@ -15,11 +15,12 @@ interface CartInfo {
 }
 
 export interface Setting {
-  addToCart: (product: Product) => Promise<boolean>;
+  addToCart: (product: Product) => Promise<void>;
   removeFromCart: (product: string) => Promise<void>;
   addQuantityToItem: (productId: string, quantity: number) => Promise<boolean>;
   setCartInfo: (cartInfo: CartInfo) => void;
   clearCart: () => void;
+  CheckIsInCar: (productId: string) => boolean;
 }
 
 type CartReturn = [Cart, Setting];
@@ -30,7 +31,6 @@ export function useCart(): CartReturn {
   useEffect(() => {
     const state = Cookies.getJSON("StylesUP:cart");
     if (state) {
-      console.log("Cookie =>", state);
       dispatch({ type: "RESET_CART_STATE", payload: state });
     }
   }, []);
@@ -39,6 +39,10 @@ export function useCart(): CartReturn {
     dispatch({ type: "SET_TOTAL_PRICE" });
     dispatch({ type: "SET_TOTAL_OF_INTENS_ON_CART" });
   }, [state.cartItens]);
+
+  function CheckIsInCar(productId: string): boolean {
+    return state.cartItens.some((item) => item.id === productId);
+  }
 
   async function addToCart(product: Product) {
     if (!state.cartItens.some((item) => item.id === product.id)) {
@@ -49,12 +53,11 @@ export function useCart(): CartReturn {
           type: "SET_CART_ITENS",
           payload: { cartIten: covertToCart(product) },
         });
-        return false;
+        return;
       }
 
       throw new Error("Ordered item out of stock");
     }
-    return true;
   }
 
   async function removeFromCart(productId: string) {
@@ -127,6 +130,7 @@ export function useCart(): CartReturn {
   }
 
   const data: Setting = {
+    CheckIsInCar,
     clearCart,
     addQuantityToItem,
     addToCart,

@@ -14,16 +14,24 @@ import { RiLogoutBoxFill } from "react-icons/ri";
 import { FaunaProduct } from "../../../../@Types";
 
 import { WishListCard } from "./WishListCard";
+import { auth } from "../../../../firebase";
+import { useRouter } from "next/dist/client/router";
 
 interface WishListItensProps {
   content: FaunaProduct[];
 }
 
 export const WishListItens = ({ content }: WishListItensProps): JSX.Element => {
+  const { reload } = useRouter()
   const isInLargeScreen = useBreakpointValue({
     base: false,
     lg: true,
   });
+
+  async function handleSignOut() {
+    await auth.LogOut()
+    reload()
+  }
 
   return (
     <Stack padding="2" h="100%">
@@ -37,7 +45,7 @@ export const WishListItens = ({ content }: WishListItensProps): JSX.Element => {
             leftIcon={<RiLogoutBoxFill />}
             colorScheme="pink"
             variant="solid"
-            onClick={() => signOut()}
+            onClick={handleSignOut}
           >
             Sign out
           </Button>

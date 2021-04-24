@@ -1,17 +1,18 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { User } from "../@Types";
 
-import { FirebaseCollections } from "./types";
+import { FirebaseCollections, UpdateUserProfileParans } from "./types";
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  measurementId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
-  messagingSenderId: process.env.MEASUREMENT_ID,
+  apiKey: "AIzaSyB27rPucLSTJTrp5I2vyUnPqKlGwvyNjCc",
+  authDomain: "stylesup.firebaseapp.com",
+  projectId: "stylesup",
+  storageBucket: "stylesup.appspot.com",
+  messagingSenderId: "79708434918",
+  appId: "1:79708434918:web:69f579513987baa627a627",
+  measurementId: "G-X7RJL660VG",
 };
 
 class FirebaseApi {
@@ -20,10 +21,6 @@ class FirebaseApi {
     if (!firebase.apps.length) {
       this.app = firebase.initializeApp(firebaseConfig);
     }
-  }
-
-  protected GetAuth() {
-    return firebase.auth();
   }
 }
 
@@ -64,36 +61,132 @@ class FireDatabase extends FirebaseApi {
 class FireAuth extends FirebaseApi {
   private googleAuth: firebase.auth.GoogleAuthProvider;
   private facebookAuth: firebase.auth.FacebookAuthProvider;
+
   private auth: firebase.auth.Auth;
+  private db: firebase.firestore.Firestore;
+
   constructor() {
     super();
-    this.facebookAuth = new firebase.auth.GoogleAuthProvider();
-    this.googleAuth = new firebase.auth.FacebookAuthProvider();
+    this.facebookAuth = new firebase.auth.FacebookAuthProvider();
+    this.googleAuth = new firebase.auth.GoogleAuthProvider();
+    this.db = firebase.firestore();
+    this.auth = firebase.auth();
+  }
+
+  public ConvertToUserCollection(user: firebase.User): User {
+    return {
+      displayName: user.displayName,
+      email: user.email,
+      id: user.uid,
+      photoURL: user.photoURL,
+    };
+  }
+
+  private async checkUser(user: firebase.User) {
+    const response = await this.db
+      .collection("users")
+      .where("id", "==", user.uid)
+      .get();
+
+    if (response.empty) {
+      await this.db.collection("users").add(this.ConvertToUserCollection(user));
+    }
   }
 
   public async createNewUserWithEmailAndPassword(
     email: string,
     password: string,
-    name?: string
+    name: string
   ): Promise<void> {
-    const auth = this.GetAuth();
-    const response = await auth.createUserWithEmailAndPassword(email, password);
+    const response = await this.auth.createUserWithEmailAndPassword(
+      email,
+      password
+    );
 
     await response.user.updateProfile({
       displayName: name,
     });
+
+    this.checkUser(response.user);
   }
 
   public async LogInWihtGoogle(): Promise<void> {
-    const auth = this.GetAuth();
-    await auth.signInWithPopup(this.googleAuth);
+    const response = await this.auth.signInWithPopup(this.googleAuth);
+
+    this.checkUser(response.user);
   }
 
   public async LogInWithFacebook(): Promise<void> {
-    const auth = this.GetAuth();
-    await auth.signInWithPopup(this.facebookAuth);
+    const response = await this.auth.signInWithPopup(this.facebookAuth);
+
+    this.checkUser(response.user);
+  }
+
+  public async LogInWithEmalAndPassword(
+    email: string,
+    password: string
+  ): Promise<void> {
+    try {
+      await this.auth.signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      switch (error.code) {
+        case "auth/wrong-password": {
+          throw new Error("Wrong password");
+        }
+        case "auth/user-not-found": {
+          throw new Error("User not found");
+        }
+        default: {
+          throw new Error(`Uncatch erro => ${error.message}`);
+        }
+      }
+    }
+  }
+  public async whachUser(cb: (user: firebase.User | null) => void) {
+    this.auth.onAuthStateChanged((user) => {
+      if (user) {
+        cb(user);
+        return;
+      }
+      cb(null);
+    });
+  }
+
+  public async GetUser(): Promise<firebase.User | null> {
+    const user = this.auth.currentUser;
+
+    return user;
+  }
+  public async LogOut() {
+    await this.auth.signOut();
   }
 }
 
+class FireUserManager extends FirebaseApi {
+  private auth: firebase.auth.Auth;
+  private phoneAuth: firebase.auth.PhoneAuthProvider;
+
+  constructor() {
+    super();
+    this.auth = firebase.auth();
+    this.phoneAuth = new firebase.auth.PhoneAuthProvider();
+  }
+
+  public UpdateUserProfile(
+    prans: UpdateUserProfileParans = {
+      displayName: null,
+      email: null,
+      phoneNumber: null,
+    }
+  ) {
+    if (prans.displayName) {
+      this.auth.currentUser.updateProfile({ displayName: prans.displayName });
+    }
+
+    if (prans.email) {
+      this.auth.currentUser.updateEmail(prans.email);
+    }
+  }
+}
 export const db = new FireDatabase();
 export const auth = new FireAuth();

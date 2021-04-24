@@ -13,7 +13,6 @@ export type Stock = {
 };
 
 export interface Variants {
-  isInCart?: boolean;
   isInStock?: boolean;
   lastPrice?: number;
   availableForSales?: boolean;
@@ -64,6 +63,8 @@ export type CarouselData = {
 };
 
 export type User = {
+  id: string;
   displayName: string;
   email: string;
+  photoURL: string;
 };

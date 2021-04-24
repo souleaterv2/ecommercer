@@ -42,7 +42,6 @@ export function cartReducer(state: Cart, action: ActionTypes): Cart {
         return { ...state, email: action.payload.email };
       }
       case "SET_TOTAL_PRICE": {
-        console.log("SET_TOTAL_PRICE");
         let totalPrice = state.cartItens.reduce((total, item) => {
           return (total += item.price * item.quantity);
         }, 0);

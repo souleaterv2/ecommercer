@@ -11,11 +11,11 @@ import {
 import { useState } from "react";
 
 import { RiMenuLine } from "react-icons/ri";
-import { FaunaUser } from "../../../../@Types";
+import { User } from "../../../../@Types";
 import { SideItens } from "./SideItens";
 
 interface SidebarProps {
-  user: FaunaUser;
+  user: User;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
@@ -46,11 +46,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
           flexWrap="wrap"
         >
           <HStack marginBottom="4">
-            <Avatar src={user.image ?? null} size="lg" alt={user.name} />
+            <Avatar src={user?.photoURL} size="lg" alt={user?.displayName} />
             <Stack>
-              <Text fontWeight="semibold">{user.name}</Text>
+              <Text fontWeight="semibold">{user?.displayName}</Text>
               <Text fontWeight="medium" color="blue.500">
-                {user.email}
+                {user?.email}
               </Text>
             </Stack>
           </HStack>

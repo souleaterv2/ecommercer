@@ -5,10 +5,10 @@ import { RiUser3Line, RiHeartLine, RiShoppingCart2Line } from "react-icons/ri";
 import { Badger } from "../../components/Badger";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useProfile } from "../../context/ProfileContext";
-import { useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
 import { useCartContext } from "../../context/CartContext";
 import { formatPrice } from "../../util/formatPrice";
+import { useAuthContext } from "../../context/AuthContext";
 
 const fontSize = "1.3rem";
 
@@ -17,7 +17,7 @@ interface ProfileProps {
 }
 
 export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
-  const [session] = useSession();
+  const { user } = useAuthContext();
   const { push } = useRouter();
   const { cartState } = useCartContext();
   const { handleLoginModel } = useGlobal();
@@ -25,7 +25,7 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
   const toast = useToast();
 
   function handleWishlist() {
-    if (session) {
+    if (user) {
       push("/profile");
       return;
     }
@@ -36,6 +36,14 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
       duration: 3000,
       status: "warning",
     });
+  }
+
+  function handleProfile() {
+    if (user) {
+      push("/profile");
+      return;
+    }
+    handleLoginModel();
   }
 
   return (
@@ -58,16 +66,16 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
         _hover={{
           color: "pink.500",
         }}
-        onClick={handleLoginModel}
+        onClick={handleProfile}
       >
         <Icon marginRight="2" fontSize={fontSize} as={RiUser3Line} />
         {isInLargeScreen && (
           <Box>
             <Text fontSize="0.9rem">
-              {session ? `Hello, ${session?.user.name}` : "Hello, Sign in"}
+              {user ? `Hello, ${user?.displayName}` : "Hello, Sign in"}
             </Text>
             <Text fontSize="0.95rem" fontWeight="semibold">
-              {session ? "welcome back" : `In your Account`}
+              {user ? "welcome back" : `In your Account`}
             </Text>
           </Box>
         )}

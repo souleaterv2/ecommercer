@@ -13,6 +13,7 @@ import {
 import { motion, HTMLMotionProps } from "framer-motion";
 
 import { RiHeart2Line } from "react-icons/ri";
+import { AiFillCheckCircle } from "react-icons/ai";
 
 import { formatPrice } from "../../util/formatPrice";
 import { useState } from "react";
@@ -34,12 +35,14 @@ export const ProductCard = ({
   price,
 }: Product): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const { addToCart, cartState } = useCartContext();
+  const { addToCart, CheckIsInCar } = useCartContext();
   const { addToWishlist } = useProfile().wishlist;
   const toast = useToast();
+  const isInCart = CheckIsInCar(id);
 
   async function handleAddButton() {
-    const result = await addToCart({
+    setIsLoading(true);
+    await addToCart({
       id,
       category,
       images,
@@ -47,6 +50,7 @@ export const ProductCard = ({
       name,
       price,
     });
+    setIsLoading(false);
   }
 
   function handleAddToWishlist() {
@@ -82,9 +86,17 @@ export const ProductCard = ({
         onClick={handleAddButton}
         size="sm"
         w="100%"
-        colorScheme="pink"
+        isDisabled={isInCart}
+        colorScheme={isInCart ? "green" : "pink"}
       >
-        Add to your Cart
+        {isInCart ? (
+          <Text as="span">
+            <Icon as={AiFillCheckCircle} fontSize="2xl" marginRight='2' />
+            Is in your cart
+          </Text>
+        ) : (
+          "Add to your Cart"
+        )}
       </Button>
       <Tooltip label="Wishlist" backgroundColor="gray.600" color="white">
         <Box

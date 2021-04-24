@@ -4,9 +4,9 @@ import { RiFileUploadFill } from "react-icons/ri";
 
 import { Input } from "../../../Form/Input";
 
-export const UserInfo = ():JSX.Element => {
+export const UserInfo = (): JSX.Element => {
   return (
-    <Stack padding="4">
+    <Stack padding="4" as="form">
       <HStack>
         <Avatar size="lg" alt="avatar user" />
         <Stack>
@@ -39,19 +39,13 @@ export const UserInfo = ():JSX.Element => {
         >
           <Input name="First name" label="First name" type="text" />
           <Input name="Email" label="Email" type="email" />
-          <Input name="New Password" label="New Password" type="password" />
         </Stack>
         <Stack flex="1">
           <Input name="Last name" label="Last name" type="text" />
           <Input name="Phone Number" label="Phone Number" type="tel" />
-          <Input
-            name="Confirm Password"
-            label="Confirm Password"
-            type="password"
-          />
         </Stack>
       </HStack>
-      <Button alignSelf="flex-end" colorScheme="pink">
+      <Button  type="submit" alignSelf="flex-end" colorScheme="pink">
         Upadte profile
       </Button>
     </Stack>
