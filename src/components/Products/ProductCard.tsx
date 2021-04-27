@@ -7,7 +7,6 @@ import {
   chakra,
   Icon,
   Tooltip,
-  useToast,
 } from "@chakra-ui/react";
 
 import { motion, HTMLMotionProps } from "framer-motion";
@@ -36,10 +35,9 @@ export const ProductCard = ({
 }: Product): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const { addToCart, CheckIsInCar } = useCartContext();
-  const { addToWishlist } = useProfile().wishlist;
-  const toast = useToast();
+  const { addToWishlist, hasInWishList } = useProfile().wishlist;
   const isInCart = CheckIsInCar(id);
-
+  const isInWislist = hasInWishList(id);
   async function handleAddButton() {
     setIsLoading(true);
     await addToCart({
@@ -54,7 +52,7 @@ export const ProductCard = ({
   }
 
   function handleAddToWishlist() {
-    const rodrigo = " rodrigo";
+    addToWishlist({ id, category, images, variants, name, price });
   }
 
   return (
@@ -91,14 +89,18 @@ export const ProductCard = ({
       >
         {isInCart ? (
           <Text as="span">
-            <Icon as={AiFillCheckCircle} fontSize="2xl" marginRight='2' />
+            <Icon as={AiFillCheckCircle} fontSize="2xl" marginRight="2" />
             Is in your cart
           </Text>
         ) : (
           "Add to your Cart"
         )}
       </Button>
-      <Tooltip label="Wishlist" backgroundColor="gray.600" color="white">
+      <Tooltip
+        label={isInWislist ? "In your wishlist" : "wishlist"}
+        backgroundColor="gray.600"
+        color="white"
+      >
         <Box
           position="absolute"
           top="1"

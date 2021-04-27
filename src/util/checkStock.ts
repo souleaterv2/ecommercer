@@ -1,8 +1,4 @@
-import { NextApiResponse } from "next";
-
 import { api } from "../services/api";
-import { db } from "../firebase";
-import { Stock } from "../@Types";
 
 interface ParansStock {
   id: string;

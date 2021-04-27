@@ -3,17 +3,19 @@ import { useSession } from "next-auth/client";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
-import { FaunaProduct } from "../@Types";
+import { Product, WishList } from "../@Types";
+import { useAuthContext } from "../context/AuthContext";
 
 export interface WishlistData {
-  wishlistItens: FaunaProduct[];
+  wishlistItens: WishList[];
   wishlistQuantity: number;
-  addToWishlist: (product: FaunaProduct) => void;
+  addToWishlist: (product: Product) => void;
   removeFromWishList: (productID: string) => void;
+  hasInWishList: (productID: string) => boolean;
 }
 
 export function useWishlist(): WishlistData {
-  const [wishlistItens, setWishlistItens] = useState<FaunaProduct[]>(() => {
+  const [wishlistItens, setWishlistItens] = useState<WishList[]>(() => {
     const wishlist = Cookies.getJSON("StylesUP:wishlist");
     if (wishlist) {
       return wishlist;
@@ -21,15 +23,19 @@ export function useWishlist(): WishlistData {
 
     return [];
   });
-  const [session] = useSession();
+  const { user } = useAuthContext();
   const toast = useToast();
 
   useEffect(() => {
     Cookies.set("StylesUP:wishlist", wishlistItens);
   }, [wishlistItens]);
 
-  function addToWishlist(product: FaunaProduct) {
-    if (!session) {
+  function hasInWishList(productID: string) {
+    return wishlistItens.some((item) => item.id === productID);
+  }
+
+  function addToWishlist(product: Product) {
+    if (!user) {
       toast({
         title: "Wishlist",
         description: "You must first login for add to wishlist",
@@ -39,8 +45,24 @@ export function useWishlist(): WishlistData {
       });
     }
 
-    if (!wishlistItens.some((item) => item.id === product.id)) {
-      setWishlistItens([...wishlistItens, product]);
+    if (!hasInWishList(product.id)) {
+      setWishlistItens([
+        ...wishlistItens,
+        {
+          id: product.id,
+          image: product.images[0].url,
+          name: product.name,
+          price: product.price,
+        },
+      ]);
+
+      toast({
+        title: "Wishlist",
+        description: "Added successfully",
+        isClosable: true,
+        duration: 2000,
+        status: "success",
+      });
     }
   }
 
@@ -55,5 +77,6 @@ export function useWishlist(): WishlistData {
     addToWishlist,
     wishlistQuantity: wishlistItens.length,
     removeFromWishList,
+    hasInWishList,
   };
 }

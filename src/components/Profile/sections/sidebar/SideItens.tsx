@@ -1,15 +1,25 @@
+import { useRouter } from "next/router";
 import { List, ListItem, ListIcon } from "@chakra-ui/react";
 
 import {
   RiHeartFill,
   RiUserFill,
   RiBankCardFill,
+  RiLogoutBoxFill,
 } from "react-icons/ri";
 
 import { useProfile } from "../../../../context/ProfileContext";
+import { auth, userManager } from "../../../../firebase";
 
-export const SideItens = (): JSX.Element=> {
+export const SideItens = (): JSX.Element => {
   const { handleProfileContent } = useProfile();
+  const { reload } = useRouter();
+
+  async function handleSignOut() {
+    await userManager.clearUserCookies();
+    await auth.LogOut();
+    reload();
+  }
 
   return (
     <List marginTop="2.5" spacing="4">
@@ -48,6 +58,16 @@ export const SideItens = (): JSX.Element=> {
       >
         <ListIcon fontSize="1.2rem" as={RiBankCardFill} />
         Payment methods
+      </ListItem>
+      <ListItem
+        _hover={{
+          color: "pink.500",
+        }}
+        cursor="pointer"
+        onClick={handleSignOut}
+      >
+        <ListIcon fontSize="1.2rem" as={RiLogoutBoxFill} />
+        Sign out
       </ListItem>
     </List>
   );

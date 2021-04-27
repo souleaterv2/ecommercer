@@ -6,19 +6,12 @@ import { cartReducer, inicialState } from "../reducer/cartReducer";
 
 import { fetchStock } from "../util/checkStock";
 import { covertToCart } from "../util/convert";
-
-interface CartInfo {
-  customerId?: string | null;
-  email?: string | null;
-  createdAt?: string | null;
-  currency?: string | null;
-}
+import { useToast } from "@chakra-ui/toast";
 
 export interface Setting {
   addToCart: (product: Product) => Promise<void>;
   removeFromCart: (product: string) => Promise<void>;
   addQuantityToItem: (productId: string, quantity: number) => Promise<boolean>;
-  setCartInfo: (cartInfo: CartInfo) => void;
   clearCart: () => void;
   CheckIsInCar: (productId: string) => boolean;
 }
@@ -27,9 +20,10 @@ type CartReturn = [Cart, Setting];
 
 export function useCart(): CartReturn {
   const [state, dispatch] = useReducer(cartReducer, inicialState);
+  const toast = useToast();
 
   useEffect(() => {
-    const state = Cookies.getJSON("StylesUP:cart");
+    const state = Cookies.getJSON(`StylesUP:cart`);
     if (state) {
       dispatch({ type: "RESET_CART_STATE", payload: state });
     }
@@ -55,8 +49,13 @@ export function useCart(): CartReturn {
         });
         return;
       }
-
-      throw new Error("Ordered item out of stock");
+      toast({
+        title: "Cart",
+        description: "Out of stock",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
     }
   }
 
@@ -92,41 +91,8 @@ export function useCart(): CartReturn {
     dispatch({ type: "RESET_CART_ITENS" });
   }
 
-  function setCartInfo(
-    cartInfo: CartInfo = {
-      createdAt: null,
-      currency: null,
-      customerId: null,
-      email: null,
-    }
-  ) {
-    if (cartInfo.createdAt) {
-      dispatch({
-        type: "SET_CREATED_AT",
-        payload: { createdAt: cartInfo.createdAt },
-      });
-    }
-
-    if (cartInfo.currency) {
-      dispatch({
-        type: "SET_CURRENCY",
-        payload: { currency: cartInfo.currency },
-      });
-    }
-
-    if (cartInfo.email) {
-      dispatch({
-        type: "SET_EMAIL",
-        payload: { email: cartInfo.email },
-      });
-    }
-
-    if (cartInfo.customerId) {
-      dispatch({
-        type: "SET_CUSTOMER_ID",
-        payload: { customerId: cartInfo.customerId },
-      });
-    }
+  function addDiscount(percent: number) {
+    dispatch({ type: "SET_DISCOUNTS", payload: { discount: percent } });
   }
 
   const data: Setting = {
@@ -135,7 +101,6 @@ export function useCart(): CartReturn {
     addQuantityToItem,
     addToCart,
     removeFromCart,
-    setCartInfo,
   };
 
   return [state, data];

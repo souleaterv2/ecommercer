@@ -11,7 +11,14 @@ interface AuthContextData {
 const AuthContext = createContext({} as AuthContextData);
 
 export const ProviderAuthContext: React.FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const currentUser = Cookies.getJSON(`StylesUPuser`);
+
+    if (currentUser) {
+      return currentUser;
+    }
+    return null;
+  });
 
   useEffect(() => {
     auth.whachUser(async (user) => {
@@ -20,9 +27,17 @@ export const ProviderAuthContext: React.FC = ({ children }) => {
           path: "/",
           expires: 20,
         });
+        Cookies.set(`StylesUPuser`, user, {
+          path: "/",
+          expires: 20,
+        });
         setUser(auth.ConvertToUserCollection(user));
       } else {
-        Cookies.set("token", {});
+        Cookies.set(`StylesUPuser`, "", {
+          path: "",
+          expires: 20,
+        });
+        Cookies.set("token", "");
       }
     });
   }, []);

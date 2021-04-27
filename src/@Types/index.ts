@@ -37,10 +37,6 @@ export type CartItem = {
 };
 
 export type Cart = {
-  customerId?: string;
-  email?: string;
-  createdAt: string;
-  currency: string;
   cartItens: CartItem[];
   // the sum of all the prices of all the item in the cart.
   // Duties, taxes, shipping and discounts exclued.
@@ -49,7 +45,7 @@ export type Cart = {
   //Duties, taxes and discounts inclued.
   totalItensOnCart: number;
   totalPrice: number;
-  discounts?: Discount[];
+  discounts?: number[];
 };
 
 export type CarouselItem = {
@@ -67,4 +63,11 @@ export type User = {
   displayName: string;
   email: string;
   photoURL: string;
+};
+
+export type WishList = {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
 };

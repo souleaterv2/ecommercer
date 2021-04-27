@@ -3,10 +3,6 @@ import { Cart, CartItem, Discount } from "../@Types";
 import { fetchStock } from "../util/checkStock";
 
 export const inicialState: Cart = {
-  customerId: "",
-  email: "",
-  createdAt: "",
-  currency: "",
   cartItens: [],
   discounts: [],
   carItensSubTotalPrice: 0,
@@ -15,11 +11,7 @@ export const inicialState: Cart = {
 };
 
 type ActionTypes =
-  | { type: "SET_CUSTOMER_ID"; payload: { customerId: string } }
-  | { type: "SET_EMAIL"; payload: { email: string } }
-  | { type: "SET_CREATED_AT"; payload: { createdAt: string } }
-  | { type: "SET_CURRENCY"; payload: { currency: string } }
-  | { type: "SET_DISCOUNTS"; payload: { discount: Discount } }
+  | { type: "SET_DISCOUNTS"; payload: { discount: number } }
   | {
       type: "SET_CART_ITENS_SUB_TOTAL_PRICE";
       payload: { cartItensSubTotalPrice: number };
@@ -35,19 +27,13 @@ type ActionTypes =
 export function cartReducer(state: Cart, action: ActionTypes): Cart {
   function doAction(): Cart {
     switch (action.type) {
-      case "SET_CUSTOMER_ID": {
-        return { ...state, customerId: action.payload.customerId };
-      }
-      case "SET_EMAIL": {
-        return { ...state, email: action.payload.email };
-      }
       case "SET_TOTAL_PRICE": {
         let totalPrice = state.cartItens.reduce((total, item) => {
           return (total += item.price * item.quantity);
         }, 0);
 
         const totalOfDiscounts = state.discounts.reduce((total, item) => {
-          return (total += item.value);
+          return (total += item);
         }, 0);
 
         if (totalOfDiscounts > 0) {
@@ -56,36 +42,37 @@ export function cartReducer(state: Cart, action: ActionTypes): Cart {
 
         return { ...state, totalPrice };
       }
+
       case "SET_DISCOUNTS": {
+        const discount = action.payload.discount / 100;
+
         return {
           ...state,
-          discounts: [...state.discounts, action.payload.discount],
+          discounts: [...state.discounts, discount],
         };
       }
+
       case "SET_CART_ITENS_SUB_TOTAL_PRICE": {
         return {
           ...state,
           carItensSubTotalPrice: action.payload.cartItensSubTotalPrice,
         };
       }
-      case "SET_CURRENCY": {
-        return { ...state, currency: action.payload.currency };
-      }
+
       case "SET_CART_ITENS": {
         return {
           ...state,
           cartItens: [...state.cartItens, action.payload.cartIten],
         };
       }
-      case "SET_CREATED_AT": {
-        return { ...state, createdAt: action.payload.createdAt };
-      }
+
       case "REMOVE_FROM_CART": {
         const newCart = state.cartItens.filter(
           (item) => item.id !== action.payload.id
         );
         return { ...state, cartItens: newCart };
       }
+
       case "ADD_QUANTITY_TO_ITEM": {
         const handInStock = fetchStock({
           id: action.payload.id,
@@ -103,15 +90,19 @@ export function cartReducer(state: Cart, action: ActionTypes): Cart {
         }
         return state;
       }
+
       case "RESET_CART_STATE": {
         return { ...action.payload };
       }
+
       case "SET_TOTAL_OF_INTENS_ON_CART": {
         return { ...state, totalItensOnCart: state.cartItens.length };
       }
+
       case "RESET_CART_ITENS": {
         return { ...state, cartItens: [] };
       }
+
       default: {
         return state;
       }
@@ -119,7 +110,11 @@ export function cartReducer(state: Cart, action: ActionTypes): Cart {
   }
 
   const newState = doAction();
-  Cookies.set("StylesUP:cart", newState, { path: "/", expires: 30 });
+
+  Cookies.set(`StylesUP:cart`, newState, {
+    path: "/",
+    expires: 30,
+  });
 
   return newState;
 }

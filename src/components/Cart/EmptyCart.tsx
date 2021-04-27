@@ -1,10 +1,10 @@
 import { HStack, Image, Stack, Text, Button, Center } from "@chakra-ui/react";
-import { useSession } from "next-auth/client";
+import { useAuthContext } from "../../context/AuthContext";
 import { useGlobal } from "../../hooks/useGlobal";
 
 export const EmptyCart = (): JSX.Element => {
   const { handleLoginModel } = useGlobal();
-  const [session] = useSession();
+  const {user} = useAuthContext();
 
   return (
     <HStack marginTop="6" flex="1" flexWrap="wrap">
@@ -15,7 +15,7 @@ export const EmptyCart = (): JSX.Element => {
         <Text fontSize="2xl" fontWeight="semibold">
           Your StylesUP cart is empty
         </Text>
-        {!session && (
+        {!user && (
           <HStack>
             <Button
               onClick={handleLoginModel}

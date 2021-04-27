@@ -5,7 +5,7 @@ import { Payment } from "./sections/payment";
 import { UserInfo } from "./sections/profile/UserInfo";
 import { WishListItens } from "./sections/wishlist/WishListItens";
 
-export const ProfileContent = () => {
+export const ProfileContent = (): JSX.Element => {
   const { wishlist, content } = useProfile();
 
   const { wishlistItens } = wishlist;
@@ -33,7 +33,7 @@ export const ProfileContent = () => {
         base: "100%",
         lg: "35%",
       }}
-      overflowX='auto'
+      overflowX="auto"
     >
       {renderContent()}
     </Box>

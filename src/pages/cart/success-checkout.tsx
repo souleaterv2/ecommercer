@@ -4,10 +4,10 @@ import { useEffect } from "react";
 
 import { Stack, Text, Image, Button } from "@chakra-ui/react";
 import { Container } from "../../components/Container";
-import { useCart } from "../../hooks/useCart";
+import { useCartContext } from "../../context/CartContext";
 
 export default function SuccessesCheckout(): JSX.Element {
-  const { clearCart } = useCart();
+  const { clearCart } = useCartContext();
 
   useEffect(() => {
     clearCart();

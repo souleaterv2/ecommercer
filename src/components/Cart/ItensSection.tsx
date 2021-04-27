@@ -36,16 +36,23 @@ export const ItensSection = (): JSX.Element => {
         lg: "66%",
       }}
     >
-      <Flex justifyContent="space-between">
+      <Flex
+        justifyContent={{
+          base: "center",
+          sm: "space-between",
+        }}
+        flexWrap="wrap"
+      >
         <Text fontWeight="medium" fontSize="1.4rem">
           Products
         </Text>
-        <HStack>
+        <HStack flexWrap="wrap">
           <Button
             leftIcon={<AiOutlineClear />}
             colorScheme="pink"
             variant="solid"
             onClick={handleClearCart}
+            flex={1}
           >
             Clear cart
           </Button>

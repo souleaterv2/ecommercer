@@ -1,6 +1,11 @@
+import uniqid from "uniqid";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
+
+import jsCookies from "js-cookie";
+
 import { User } from "../@Types";
 
 import { FirebaseCollections, UpdateUserProfileParans } from "./types";
@@ -107,6 +112,8 @@ class FireAuth extends FirebaseApi {
       displayName: name,
     });
 
+    await this.auth.currentUser.sendEmailVerification();
+
     this.checkUser(response.user);
   }
 
@@ -165,14 +172,16 @@ class FireAuth extends FirebaseApi {
 class FireUserManager extends FirebaseApi {
   private auth: firebase.auth.Auth;
   private phoneAuth: firebase.auth.PhoneAuthProvider;
+  private storage: firebase.storage.Storage;
 
   constructor() {
     super();
     this.auth = firebase.auth();
     this.phoneAuth = new firebase.auth.PhoneAuthProvider();
+    this.storage = firebase.storage();
   }
 
-  public UpdateUserProfile(
+  public async UpdateUserProfile(
     prans: UpdateUserProfileParans = {
       displayName: null,
       email: null,
@@ -180,13 +189,40 @@ class FireUserManager extends FirebaseApi {
     }
   ) {
     if (prans.displayName) {
-      this.auth.currentUser.updateProfile({ displayName: prans.displayName });
+      await this.auth.currentUser.updateProfile({
+        displayName: prans.displayName,
+      });
     }
 
     if (prans.email) {
-      this.auth.currentUser.updateEmail(prans.email);
+      await this.auth.currentUser.updateEmail(prans.email);
+    }
+  }
+
+  public async clearUserCookies() {
+    [
+      "StylesUP:cart",
+      "StylesUP:wishlist",
+      "token",
+      "StylesUP:currentPage",
+    ].forEach((cookie) => jsCookies.remove(cookie));
+  }
+
+  public async uploadProfileImage(userID: string, file: any, fileName: string) {
+    const id = uniqid();
+    try {
+      await this.storage
+        .ref(`/users/${userID}/profile_images/${id}-${fileName}`)
+        .put(file);
+
+      return this.storage
+        .ref(`users/${userID}/profile_images/${id}-${fileName}`)
+        .getDownloadURL();
+    } catch (e) {
+      console.log("uploadProfileFunction =>", e);
     }
   }
 }
 export const db = new FireDatabase();
 export const auth = new FireAuth();
+export const userManager = new FireUserManager();

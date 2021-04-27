@@ -22,10 +22,12 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
   const { cartState } = useCartContext();
   const { handleLoginModel } = useGlobal();
   const { wishlistQuantity } = useProfile().wishlist;
+  const { handleProfileContent } = useProfile();
   const toast = useToast();
 
   function handleWishlist() {
     if (user) {
+      handleProfileContent("wishlist");
       push("/profile");
       return;
     }
@@ -70,7 +72,7 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
       >
         <Icon marginRight="2" fontSize={fontSize} as={RiUser3Line} />
         {isInLargeScreen && (
-          <Box>
+          <Box textAlign='center'>
             <Text fontSize="0.9rem">
               {user ? `Hello, ${user?.displayName}` : "Hello, Sign in"}
             </Text>
@@ -94,7 +96,7 @@ export const Profile = ({ isInLargeScreen }: ProfileProps): JSX.Element => {
             <Icon fontSize={fontSize} as={RiShoppingCart2Line} />
           </Badger>
           {isInLargeScreen && (
-            <Box>
+            <Box textAlign='center'>
               <Text fontSize="0.9rem">My Cart</Text>
               <Text fontSize="0.95rem" fontWeight="semibold">
                 {formatPrice(cartState.totalPrice)}

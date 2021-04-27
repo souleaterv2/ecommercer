@@ -22,11 +22,13 @@ import { Input } from "../Form/Input";
 type SignUpFormData = {
   signUpEmail: string;
   signUpPassword: string;
-  signUpName: string;
+  signUpFisrtName: string;
+  signUpSecondName: string;
 };
 
 const signUpFormSchema = yup.object().shape({
-  signUpName: yup.string().required("Nome obrigatório"),
+  signUpFisrtName: yup.string().required("Fisrt Name required"),
+  signUpSecondName: yup.string().required("Second Name required"),
   signUpEmail: yup
     .string()
     .required("E-mail Obrigatório")
@@ -47,14 +49,14 @@ export function SignUpForm(): JSX.Element {
   const { errors } = formState;
 
   const toast = useToast();
-  
+
   const handleSignUp: SubmitHandler<SignUpFormData> = async (values) => {
     setIsLoading(true);
     try {
       await auth.createNewUserWithEmailAndPassword(
-        values.signUpEmail,
-        values.signUpPassword,
-        values.signUpName
+        values.signUpEmail.trim(),
+        values.signUpPassword.trim(),
+        values.signUpFisrtName.trim() + " " + values.signUpSecondName.trim()
       );
     } catch {
       toast({
@@ -81,10 +83,16 @@ export function SignUpForm(): JSX.Element {
       onSubmit={handleSubmit(handleSignUp)}
     >
       <Input
-        name="signUpName"
-        label="Name"
-        error={errors.signUpName}
-        {...register("signUpName")}
+        name="signUpFisrtName"
+        label="Fisrt Name"
+        error={errors.signUpFisrtName}
+        {...register("signUpFisrtName")}
+      />
+      <Input
+        name="signUpSecondName"
+        label="Second Name"
+        error={errors.signUpSecondName}
+        {...register("signUpSecondName")}
       />
       <Input
         name="signUpEmail"
